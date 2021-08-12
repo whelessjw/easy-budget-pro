@@ -1,0 +1,15 @@
+.tab-link a {
+  color: gray;
+  font-size: x-large;
+  margin-bottom: 25px;
+}
+
+.tab-link:hover a {
+  color: black;
+}
+
+.tab-link-active a {
+  text-decoration: underline;
+  text-underline-offset: 15px;
+  color: black;
+}

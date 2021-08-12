@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { rootReducer } from "./reducers/index";
 import promise from "redux-promise";
+import { BrowserRouter } from "react-router-dom";
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -19,9 +20,9 @@ ReactDOM.render(
         window.__REDUX_DEVTOOLS_EXTENSION__()
     )}
   >
-    <React.StrictMode>
+    <BrowserRouter>
       <App />
-    </React.StrictMode>
+    </BrowserRouter>
   </Provider>,
   document.getElementById("root")
 );

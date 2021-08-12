@@ -1,4 +1,4 @@
-import NavigationBar from "./components/NavigationBar";
+import NavigationBar from "./components/Navigation/NavigationBar";
 import { Switch, Route, Redirect } from "react-router-dom";
 import OverviewContainer from "./components/OverviewTab/OverviewContainer";
 import IncomeContainer from "./components/IncomeTab/IncomeContainer";

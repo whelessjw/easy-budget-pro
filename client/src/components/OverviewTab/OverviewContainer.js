@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import Budget from "./Budget";
 import { useDispatch, useSelector } from "react-redux";
 import { createInitialBudget } from "../../actions";
-import NavigationTabs from "../NavigationTabs/NavigationTabs";
+import NavigationTabs from "../Navigation/NavigationTabs";
 
 export default function OverviewContainer() {
   const dispatch = useDispatch();

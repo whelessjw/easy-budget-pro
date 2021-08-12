@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationTabs from "../NavigationTabs/NavigationTabs";
+import NavigationTabs from "../Navigation/NavigationTabs";
 
 export default function IncomeContainer() {
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CategoryRow from "./CategoryRow";
 import CurrencyInput from "react-currency-input-field";
-import { editMonthlyIncome } from "../actions";
+import { editMonthlyIncome } from "../../actions";
 
 export default function Budget() {
   const categories = useSelector((state) => state.currentBudget.categories);

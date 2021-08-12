@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationTabs from "../NavigationTabs";
+import NavigationTabs from "../NavigationTabs/NavigationTabs";
 
 export default function AccountBalancesContainer() {
   return (

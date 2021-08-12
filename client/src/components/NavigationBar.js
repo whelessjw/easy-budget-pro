@@ -4,7 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 
 export default function NavigationBar() {
   return (
-    <Navbar className="navigation-bar" bg="primary" variant="dark">
+    <Navbar bg="primary" variant="dark">
       <Container>
         <LinkContainer to="/">
           <Navbar.Brand href="/">Easy Budget Pro</Navbar.Brand>

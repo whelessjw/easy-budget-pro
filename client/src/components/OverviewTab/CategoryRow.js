@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useState } from "react";
-import { deleteCategory, editBudgetedAmount } from "../actions";
+import { deleteCategory, editBudgetedAmount } from "../../actions";
 import CurrencyInput from "react-currency-input-field";
 
 export default function CategoryRow({ name, budgeted, balance, id }) {

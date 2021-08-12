@@ -1,7 +1,7 @@
 .tab-link a {
   color: gray;
   font-size: x-large;
-  margin-bottom: 25px;
+  margin: 30px 0;
 }
 
 .tab-link:hover a {

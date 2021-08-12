@@ -1,9 +1,9 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import Budget from "../Budget";
+import Budget from "./Budget";
 import { useDispatch, useSelector } from "react-redux";
 import { createInitialBudget } from "../../actions";
-import NavigationTabs from "../NavigationTabs";
+import NavigationTabs from "../NavigationTabs/NavigationTabs";
 
 export default function OverviewContainer() {
   const dispatch = useDispatch();

@@ -9,16 +9,26 @@ export default function Budget() {
   const monthlyIncome = useSelector(
     (state) => state.currentBudget.monthlyIncome
   );
+  const totalAmountBudgeted = categories.reduce((total, category) => {
+    return category.budgeted + total;
+  }, 0);
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   const dispatch = useDispatch();
 
   return (
     <div className="text-center col-md-10 offset-md-1">
       <h1>August 2021</h1>
-      <table className="table table-success table-striped table-borderless">
+      <table className="table table-striped table-borderless">
         <thead>
           <tr>
-            <td colSpan="2">Monthly Income:</td>
-            <td className="text-right" colSpan="1" id="income-to-budget">
+            <td colSpan="2">
+              <h2>Monthly Income:</h2>
+            </td>
+            <td className="align-middle" colSpan="1" id="income-to-budget">
               <CurrencyInput
                 id="input-monthly-income"
                 name="input-monthly-income"
@@ -38,9 +48,18 @@ export default function Budget() {
               />
             </td>
           </tr>
+          <tr>
+            <td colSpan="3">
+              {monthlyIncome !== 0 &&
+                `You have $${numberWithCommas(
+                  monthlyIncome - totalAmountBudgeted
+                )} left to budget`}
+            </td>
+          </tr>
         </thead>
       </table>
-      <table className="table table-primary table-striped  table-borderless table-sm">
+
+      <table className="table table-striped  table-borderless table-sm">
         <thead>
           <tr>
             <th>

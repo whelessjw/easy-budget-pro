@@ -33,14 +33,44 @@ export const currentBudgetReducer = function (state = null, action) {
         year,
         monthlyIncome: 0,
         categories: [
-          { categoryId: 1, name: "Savings", budgeted: 0, balance: 0 },
-          { categoryId: 2, name: "Housing", budgeted: 0, balance: 0 },
-          { categoryId: 3, name: "Utilities", budgeted: 0, balance: 0 },
-          { categoryId: 4, name: "Groceries", budgeted: 0, balance: 0 },
-          { categoryId: 5, name: "Restaurants", budgeted: 0, balance: 0 },
-          { categoryId: 6, name: "Car Payment", budgeted: 0, balance: 0 },
-          { categoryId: 7, name: "Gas", budgeted: 0, balance: 0 },
-          { categoryId: 8, name: "Personal", budgeted: 0, balance: 0 },
+          { categoryId: 1, name: "Savings", budgeted: 0, spent: 0, balance: 0 },
+          { categoryId: 2, name: "Housing", budgeted: 0, spent: 0, balance: 0 },
+          {
+            categoryId: 3,
+            name: "Utilities",
+            budgeted: 0,
+            spent: 0,
+            balance: 0,
+          },
+          {
+            categoryId: 4,
+            name: "Groceries",
+            budgeted: 0,
+            spent: 0,
+            balance: 0,
+          },
+          {
+            categoryId: 5,
+            name: "Restaurants",
+            budgeted: 0,
+            spent: 0,
+            balance: 0,
+          },
+          {
+            categoryId: 6,
+            name: "Car Payment",
+            budgeted: 0,
+            spent: 0,
+            balance: 0,
+          },
+          { categoryId: 7, name: "Gas", budgeted: 0, spent: 0, balance: 0 },
+          {
+            categoryId: 8,
+            name: "Personal",
+            budgeted: 0,
+            spent: 0,
+            balance: 0,
+          },
         ],
         income: [],
         expenses: [],
@@ -69,7 +99,9 @@ export const currentBudgetReducer = function (state = null, action) {
 
       budgetedState.categories = budgetedState.categories.map((category) => {
         if (category.categoryId === categoryId) {
+          console.log(category);
           category.budgeted = amount;
+          category.balance = category.budgeted - category.spent;
         }
         return category;
       });

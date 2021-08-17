@@ -57,14 +57,15 @@ export const currentBudgetReducer = function (state = null, action) {
 
     case EDIT_MONTHLY_INCOME:
       const incomeState = { ...state };
+
       incomeState.monthlyIncome = action.payload;
+
       return incomeState;
 
     case EDIT_BUDGETED_AMOUNT:
       const budgetedState = { ...state };
       const amount = action.payload.amount;
       const categoryId = action.payload.categoryId;
-      console.log(amount, categoryId);
 
       budgetedState.categories = budgetedState.categories.map((category) => {
         if (category.categoryId === categoryId) {

@@ -28,9 +28,13 @@ export default function Budget() {
                 placeholder="Income"
                 defaultValue={monthlyIncome}
                 decimalsLimit={2}
-                onValueChange={(value, name) =>
-                  dispatch(editMonthlyIncome(parseInt(value)))
-                }
+                onValueChange={(value, name) => {
+                  if (value) {
+                    dispatch(editMonthlyIncome(parseInt(value)));
+                  } else {
+                    dispatch(editMonthlyIncome(0));
+                  }
+                }}
               />
             </td>
           </tr>

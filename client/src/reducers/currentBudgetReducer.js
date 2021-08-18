@@ -99,7 +99,6 @@ export const currentBudgetReducer = function (state = null, action) {
 
       budgetedState.categories = budgetedState.categories.map((category) => {
         if (category.categoryId === categoryId) {
-          console.log(category);
           category.budgeted = amount;
           category.balance = category.budgeted - category.spent;
         }

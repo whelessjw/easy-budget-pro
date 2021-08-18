@@ -40,7 +40,7 @@ export default function Budget() {
                 decimalsLimit={2}
                 onValueChange={(value, name) => {
                   if (value) {
-                    dispatch(editMonthlyIncome(parseInt(value)));
+                    dispatch(editMonthlyIncome(parseFloat(value)));
                   } else {
                     dispatch(editMonthlyIncome(0));
                   }
@@ -50,10 +50,35 @@ export default function Budget() {
           </tr>
           <tr>
             <td colSpan="3">
+              {monthlyIncome === 0 && (
+                <h5 className="text-primary">
+                  Enter Your Monthly Income to Get Started
+                </h5>
+              )}
               {monthlyIncome !== 0 &&
-                `You have $${numberWithCommas(
-                  monthlyIncome - totalAmountBudgeted
-                )} left to budget`}
+                monthlyIncome - totalAmountBudgeted > 0 && (
+                  <h5 className="text-warning">
+                    You have $
+                    {numberWithCommas(
+                      (monthlyIncome - totalAmountBudgeted).toFixed(2)
+                    )}{" "}
+                    left to budget
+                  </h5>
+                )}
+              {monthlyIncome !== 0 &&
+                monthlyIncome - totalAmountBudgeted === 0 && (
+                  <h5 className="text-success">Your Budget is Balanced!</h5>
+                )}
+              {monthlyIncome !== 0 &&
+                monthlyIncome - totalAmountBudgeted < 0 && (
+                  <h5 className="text-danger">
+                    You've budgeted $
+                    {numberWithCommas(
+                      (monthlyIncome - totalAmountBudgeted).toFixed(2) * -1
+                    )}{" "}
+                    too much!
+                  </h5>
+                )}
             </td>
           </tr>
         </thead>

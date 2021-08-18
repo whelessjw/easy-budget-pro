@@ -75,7 +75,7 @@ export default function CategoryRow({ name, budgeted, balance, id }) {
             decimalsLimit={2}
             onValueChange={(value) => {
               if (value) {
-                dispatch(editBudgetedAmount(parseInt(value), id));
+                dispatch(editBudgetedAmount(parseFloat(value), id));
               } else {
                 dispatch(editBudgetedAmount(0, id));
               }

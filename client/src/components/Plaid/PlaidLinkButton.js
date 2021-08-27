@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { PlaidLink } from "react-plaid-link";
 import axios from "axios";
 
@@ -16,15 +16,6 @@ export default function PlaidLinkButton() {
     }
     createLinkToken();
   }, [setToken]);
-
-  // const handler = plaid.create({
-  //   token: token,
-  //   onSuccess: async (publicToken, metadata) => {
-  //     console.log(publicToken);
-  //     console.log(metadata);
-  //     await axios.post("/api/exchange_public_token", publicToken);
-  //   },
-  // });
 
   const onSuccess = (public_token, metadata) => {
     // send public_token to server

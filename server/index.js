@@ -77,26 +77,15 @@ app.post("/api/get_balances", async (req, res) => {
     access_token: accessToken,
   };
 
-  // const authResponse = await plaidClient.getAuth(accessToken);
-  // console.log("---------------");
-  // console.log("Auth Response: ");
-  // console.log(util.inspect(authResponse, false, null, true));
-
-  // const identityResponse = await plaidClient.getIdentity(accessToken);
-  // console.log("-------");
-  // console.log("Identity Response: ");
-  // console.log(util.inspect(identityResponse, false, null, true));
   try {
     const balanceResponse = await client.accountsBalanceGet(request);
-    console.log("-------");
-    console.log("Balance Response: ");
-    console.log(util.inspect(balanceResponse, false, null, true));
-
     res.json(balanceResponse.data);
   } catch (error) {
     console.log(error);
   }
 });
+
+app.post("/api/get_transactions"), async (req, res) => {};
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));

@@ -1,9 +1,102 @@
-const path = require("path");
+require("dotenv").config();
+
 const express = require("express");
-
-const PORT = process.env.PORT || 3001;
-
 const app = express();
+
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+
+const cors = require("cors");
+app.use(cors());
+
+const path = require("path");
+const util = require("util");
+
+const PORT = process.env.PORT || 8000;
+
+const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
+const configuration = new Configuration({
+  basePath: PlaidEnvironments[process.env.PLAID_ENV],
+  baseOptions: {
+    headers: {
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+      "PLAID-SECRET": process.env.PLAID_SECRET,
+    },
+  },
+});
+
+const client = new PlaidApi(configuration);
+
+app.post("/api/create_link_token", async function (req, res) {
+  // Get the client_user_id by searching for the current user
+  // const user = await User.find(...);
+  // const clientUserId = user.id;
+  const clientUserId = "1234";
+  const request = {
+    user: {
+      // This should correspond to a unique id for the current user.
+      client_user_id: clientUserId,
+    },
+    client_name: "Easy Budget Pro",
+    products: ["auth", "transactions"],
+    language: "en",
+    country_codes: ["US"],
+  };
+  try {
+    const createTokenResponse = await client.linkTokenCreate(request);
+    console.log(createTokenResponse.data.link_token);
+    res.json(createTokenResponse.data.link_token);
+  } catch (error) {
+    // handle error
+    console.log(error);
+  }
+});
+
+app.post("/api/exchange_public_token", async function (req, res, next) {
+  const publicToken = req.body.public_token;
+  try {
+    const response = await client.itemPublicTokenExchange({
+      public_token: publicToken,
+    });
+    const accessToken = response.data.access_token;
+    const itemID = response.data.item_id;
+
+    console.log(accessToken);
+    console.log(itemID);
+
+    res.json({ accessToken, itemID });
+  } catch (error) {
+    // handle error
+    console.log(error);
+  }
+});
+
+app.post("/api/get_balances", async (req, res) => {
+  const accessToken = req.body.accessToken;
+  const request = {
+    access_token: accessToken,
+  };
+
+  // const authResponse = await plaidClient.getAuth(accessToken);
+  // console.log("---------------");
+  // console.log("Auth Response: ");
+  // console.log(util.inspect(authResponse, false, null, true));
+
+  // const identityResponse = await plaidClient.getIdentity(accessToken);
+  // console.log("-------");
+  // console.log("Identity Response: ");
+  // console.log(util.inspect(identityResponse, false, null, true));
+  try {
+    const balanceResponse = await client.accountsBalanceGet(request);
+    console.log("-------");
+    console.log("Balance Response: ");
+    console.log(util.inspect(balanceResponse, false, null, true));
+
+    res.json(balanceResponse.data);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PlaidLink } from "react-plaid-link";
 import axios from "axios";
 
@@ -6,7 +6,7 @@ export default function PlaidLinkButton() {
   const [token, setToken] = useState(null);
 
   // generate a link_token
-  React.useEffect(() => {
+  useEffect(() => {
     async function createLinkToken() {
       let response = await axios.post(
         "http://localhost:8000/api/create_link_token"

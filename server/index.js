@@ -71,7 +71,7 @@ app.post("/api/exchange_public_token", async function (req, res, next) {
   }
 });
 
-app.post("/api/get_balances", async (req, res) => {
+app.get("/api/get_balances", async (req, res) => {
   const accessToken = req.body.accessToken;
   const request = {
     access_token: accessToken,
@@ -85,7 +85,41 @@ app.post("/api/get_balances", async (req, res) => {
   }
 });
 
-app.post("/api/get_transactions"), async (req, res) => {};
+app.get("/api/get_transactions", async (req, res) => {
+  const request = {
+    access_token: req.body.accessToken,
+    start_date: req.body.startDate,
+    end_date: req.body.endDate,
+    options: {
+      account_ids: [req.body.primaryAccount],
+    },
+  };
+  try {
+    const response = await client.transactionsGet(request);
+    let transactions = response.data.transactions;
+    const total_transactions = response.data.total_transactions;
+    // Manipulate the offset parameter to paginate
+    // transactions and retrieve all available data
+    while (transactions.length < total_transactions) {
+      const paginatedRequest = {
+        access_token: accessToken,
+        start_date: "2018-01-01",
+        end_date: "2020-02-01",
+        options: {
+          offset: transactions.length,
+        },
+      };
+      const paginatedResponse = await client.transactionsGet(paginatedRequest);
+      transactions = transactions.concat(paginatedResponse.data.transactions);
+    }
+    res.json(transactions);
+  } catch {
+    (err) => {
+      // handle error
+      console.log(err);
+    };
+  }
+});
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));

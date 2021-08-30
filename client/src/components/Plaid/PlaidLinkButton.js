@@ -21,6 +21,7 @@ export default function PlaidLinkButton() {
     // send public_token to server
     console.log(public_token);
     console.log(metadata);
+    console.log("primary account id: ", metadata.account_id);
     axios.post("http://localhost:8000/api/exchange_public_token", {
       public_token: public_token,
     });

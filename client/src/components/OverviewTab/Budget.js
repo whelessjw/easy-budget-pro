@@ -26,7 +26,7 @@ export default function Budget() {
         <thead>
           <tr>
             <td colSpan="2">
-              <h2>Monthly Income:</h2>
+              <h2>Estimated Income:</h2>
             </td>
             <td className="align-middle" colSpan="1" id="income-to-budget">
               <CurrencyInput

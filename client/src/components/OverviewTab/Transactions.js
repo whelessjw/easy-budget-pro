@@ -20,6 +20,30 @@ export default function Transactions() {
   return (
     <>
       <h1 className={"text-center"}>Transactions for {currentBudget.title}</h1>
+      <h3 className={"text-center"}>
+        Income: $
+        {transactions
+          .reduce((acc, curr) => {
+            if (curr.amount < 0) {
+              acc += curr.amount * -1;
+            }
+            return acc;
+          }, 0)
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+      </h3>
+      <h3 className={"text-center"}>
+        Expenses: $
+        {transactions
+          .reduce((acc, curr) => {
+            if (curr.amount >= 0) {
+              acc += curr.amount;
+            }
+            return acc;
+          }, 0)
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+      </h3>
       {transactions && (
         <Table striped bordered hover>
           <thead>

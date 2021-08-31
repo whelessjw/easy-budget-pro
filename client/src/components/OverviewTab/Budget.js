@@ -109,6 +109,7 @@ export default function Budget() {
                 id={category.categoryId}
                 name={category.name}
                 budgeted={category.budgeted}
+                spent={category.spent}
                 balance={category.balance}
               />
             ))}

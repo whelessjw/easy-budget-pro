@@ -6,8 +6,7 @@ import { useState } from "react";
 import { deleteCategory, editBudgetedAmount } from "../../actions";
 import CurrencyInput from "react-currency-input-field";
 
-export default function CategoryRow({ name, budgeted, balance, id }) {
-  const expenses = useSelector((state) => state.currentBudget.expenses);
+export default function CategoryRow({ name, budgeted, spent, balance, id }) {
   const [modalShow, setModalShow] = useState(false);
   const dispatch = useDispatch();
 
@@ -84,18 +83,10 @@ export default function CategoryRow({ name, budgeted, balance, id }) {
           {/* ${budgeted.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} */}
         </td>
         <td className="text-center">
-          $
-          {expenses
-            .reduce((acc, expense) => {
-              if (expense.category === name) {
-                return (acc += expense.amount);
-              } else return acc;
-            }, 0)
-            .toString()
-            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+          ${spent.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
         </td>
         <td className="text-center">
-          ${balance.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+          ${balance.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
         </td>
       </tr>
     </>

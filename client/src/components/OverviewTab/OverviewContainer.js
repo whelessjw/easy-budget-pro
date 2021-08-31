@@ -4,6 +4,7 @@ import Budget from "./Budget";
 import { useDispatch, useSelector } from "react-redux";
 import { createInitialBudget } from "../../actions";
 import NavigationTabs from "../Navigation/NavigationTabs";
+import Transactions from "./Transactions";
 
 export default function OverviewContainer() {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export default function OverviewContainer() {
             )}
             {currentBudget && <Budget />}
           </Col>
-          <Col>{"List of Transactions for month"}</Col>
+          <Col>{currentBudget && <Transactions />}</Col>
         </Row>
       </Container>
     </>

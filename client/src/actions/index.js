@@ -2,6 +2,7 @@ export const CREATE_INITIAL_BUDGET = "CREATE_INITIAL_BUDGET";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_MONTHLY_INCOME = "EDIT_MONTHLY_INCOME";
 export const EDIT_BUDGETED_AMOUNT = "EDIT_BUDGETED_AMOUNT";
+export const ADD_TRANSACTION_TO_CATEGORY = "ADD_TRANSACTION_TO_CATEGORY";
 
 export const createInitialBudget = () => {
   return {
@@ -27,5 +28,15 @@ export const editBudgetedAmount = (amount, categoryId) => {
   return {
     type: EDIT_BUDGETED_AMOUNT,
     payload: { amount, categoryId },
+  };
+};
+
+export const addTransactionToCategory = (transaction, categoryID) => {
+  return {
+    type: ADD_TRANSACTION_TO_CATEGORY,
+    payload: {
+      transaction,
+      categoryID,
+    },
   };
 };

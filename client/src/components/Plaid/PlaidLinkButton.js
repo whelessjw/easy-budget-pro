@@ -12,9 +12,7 @@ export default function PlaidLinkButton() {
   // generate a link_token
   useEffect(() => {
     async function createLinkToken() {
-      let response = await axios.post(
-        "http://localhost:8000/api/create_link_token"
-      );
+      let response = await axios.post("/api/create_link_token");
       const link_token = response.data;
       setToken(link_token);
     }
@@ -24,7 +22,7 @@ export default function PlaidLinkButton() {
   const onSuccess = async (public_token, metadata) => {
     // send public_token to server
     const accessTokenAndItemID = await axios.post(
-      "http://localhost:8000/api/exchange_public_token",
+      "/api/exchange_public_token",
       {
         public_token: public_token,
       }

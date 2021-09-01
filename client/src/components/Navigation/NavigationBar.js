@@ -12,10 +12,8 @@ export default function NavigationBar() {
         </LinkContainer>
         <Nav className="justify-content-end">
           <PlaidLinkButton />
-          <Nav.Link href="http://localhost:8000/auth/google">
-            Log in with Google
-          </Nav.Link>
-          <Nav.Link href="#log-out">Log Out</Nav.Link>
+          {/* <Nav.Link href="/auth/google">Log in with Google</Nav.Link>
+          <Nav.Link href="#log-out">Log Out</Nav.Link> */}
         </Nav>
       </Container>
     </Navbar>

@@ -14,7 +14,7 @@ export const saveAccessTokenAndItemID = async (accessTokenAndItemID) => {
 };
 
 export const createInitialBudget = async () => {
-  const response = await axios.post(`http://localhost:8000/api/first_budget`);
+  const response = await axios.post(`/api/first_budget`);
   return {
     type: CREATE_INITIAL_BUDGET,
     payload: response,

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { PlaidLink } from "react-plaid-link";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { saveAccessTokenAndItemID } from "../../actions";
 
 export default function PlaidLinkButton() {
   const [token, setToken] = useState(null);
+
+  const dispatch = useDispatch();
 
   // generate a link_token
   useEffect(() => {
@@ -17,14 +21,16 @@ export default function PlaidLinkButton() {
     createLinkToken();
   }, [setToken]);
 
-  const onSuccess = (public_token, metadata) => {
+  const onSuccess = async (public_token, metadata) => {
     // send public_token to server
-    console.log(public_token);
-    console.log(metadata);
-    console.log("primary account id: ", metadata.account_id);
-    axios.post("http://localhost:8000/api/exchange_public_token", {
-      public_token: public_token,
-    });
+    const accessTokenAndItemID = await axios.post(
+      "http://localhost:8000/api/exchange_public_token",
+      {
+        public_token: public_token,
+      }
+    );
+
+    dispatch(saveAccessTokenAndItemID(accessTokenAndItemID));
   };
 
   // The pre-built PlaidLink component uses the usePlaidLink hook under the hood.

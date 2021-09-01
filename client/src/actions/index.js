@@ -1,9 +1,17 @@
 import axios from "axios";
+export const SAVE_ACCESS_TOKEN_AND_ITEM_ID = "SAVE_ACCESS_TOKEN_AND_ITEM_ID";
 export const CREATE_INITIAL_BUDGET = "CREATE_INITIAL_BUDGET";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_MONTHLY_INCOME = "EDIT_MONTHLY_INCOME";
 export const EDIT_BUDGETED_AMOUNT = "EDIT_BUDGETED_AMOUNT";
 export const ADD_TRANSACTION_TO_CATEGORY = "ADD_TRANSACTION_TO_CATEGORY";
+
+export const saveAccessTokenAndItemID = async (accessTokenAndItemID) => {
+  return {
+    type: SAVE_ACCESS_TOKEN_AND_ITEM_ID,
+    payload: accessTokenAndItemID,
+  };
+};
 
 export const createInitialBudget = async () => {
   const response = await axios.post(`http://localhost:8000/api/first_budget`);

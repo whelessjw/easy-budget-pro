@@ -1,18 +1,32 @@
+const path = require("path");
+const express = require("express");
+const { urlencoded } = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const keys = require("./config/keys");
+const app = express();
+const bodyParser = require("body-parser");
 require("dotenv").config();
 
-const express = require("express");
-const app = express();
+const Budget = require("./models/Budget");
 
-const bodyParser = require("body-parser");
+//middlewares
 app.use(bodyParser.json());
-
-const cors = require("cors");
 app.use(cors());
+app.use(urlencoded({ extended: false }));
 
-const path = require("path");
 const util = require("util");
 
 const PORT = process.env.PORT || 8000;
+
+mongoose.connect(
+  keys.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  () => console.log("connected to db")
+);
 
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 const configuration = new Configuration({
@@ -26,6 +40,21 @@ const configuration = new Configuration({
 });
 
 const client = new PlaidApi(configuration);
+
+let months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 app.post("/api/create_link_token", async function (req, res) {
   // Get the client_user_id by searching for the current user
@@ -118,6 +147,39 @@ app.get("/api/get_transactions", async (req, res) => {
       // handle error
       console.log(err);
     };
+  }
+});
+
+app.post("/api/first_budget", async (req, res) => {
+  const date = new Date();
+  let month = date.getMonth();
+  let year = date.getFullYear();
+  let currentMonth = months[month];
+  let title = `${currentMonth} ${year}`;
+
+  const newBudget = new Budget({
+    title,
+    month,
+    year,
+    monthlyIncome: 0,
+    categories: [
+      { name: "Savings", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Housing", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Utilities", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Groceries", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Restaurants", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Car Payment", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Gas", budgeted: 0, spent: 0, balance: 0 },
+      { name: "Personal", budgeted: 0, spent: 0, balance: 0 },
+    ],
+  });
+
+  try {
+    const savedNewBudget = await newBudget.save();
+
+    res.status(200).send(savedNewBudget);
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 

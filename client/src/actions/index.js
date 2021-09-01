@@ -1,12 +1,15 @@
+import axios from "axios";
 export const CREATE_INITIAL_BUDGET = "CREATE_INITIAL_BUDGET";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_MONTHLY_INCOME = "EDIT_MONTHLY_INCOME";
 export const EDIT_BUDGETED_AMOUNT = "EDIT_BUDGETED_AMOUNT";
 export const ADD_TRANSACTION_TO_CATEGORY = "ADD_TRANSACTION_TO_CATEGORY";
 
-export const createInitialBudget = () => {
+export const createInitialBudget = async () => {
+  const response = await axios.post(`http://localhost:8000/api/first_budget`);
   return {
     type: CREATE_INITIAL_BUDGET,
+    payload: response,
   };
 };
 

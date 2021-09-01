@@ -89,7 +89,7 @@ const googleAuth = passport.authenticate("google", {
 app.get("/auth/google", googleAuth);
 
 app.get("/auth/google/callback", googleAuth, (req, res) => {
-  res.send("You are logged in via Google!");
+  res.send("You are now logged in via Google!");
 });
 
 app.get("/api/current_user", (req, res) => {

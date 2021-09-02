@@ -58,23 +58,26 @@ let months = [
 ];
 
 app.post("/api/login", async function (req, res) {
-  User.findOne({ googleId: req.body.googleId }).then((existingUser) => {
-    if (existingUser) {
-      // we already have a record with the given profile ID
-      //done(null, existingUser);
-      res.json(existingUser);
-    } else {
-      // we don't have a user record with this ID, make a new record!
-      const newUser = new User({
-        googleId: req.body.googleId,
-        name: req.body.name,
-        email: req.body.email,
-      });
+  User.findOne({ googleId: req.body.googleId })
+    .populate("budgets")
+    .populate("currentBudget")
+    .then((existingUser) => {
+      if (existingUser) {
+        // we already have a record with the given profile ID
+        //done(null, existingUser);
+        res.json(existingUser);
+      } else {
+        // we don't have a user record with this ID, make a new record!
+        const newUser = new User({
+          googleId: req.body.googleId,
+          name: req.body.name,
+          email: req.body.email,
+        });
 
-      newUser.save();
-      res.json(newUser);
-    }
-  });
+        newUser.save();
+        res.json(newUser);
+      }
+    });
 });
 
 app.post("/api/create_link_token", async function (req, res) {

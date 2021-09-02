@@ -9,7 +9,7 @@ import {
 export const currentBudgetReducer = function (state = null, action) {
   switch (action.type) {
     case CREATE_INITIAL_BUDGET:
-      return action.payload.data;
+      return action.payload.data.budgets[0];
 
     case DELETE_CATEGORY:
       const newCategoryState = { ...state };

@@ -10,8 +10,6 @@ const bodyParser = require("body-parser");
 
 const User = require("./models/User");
 
-const Budget = require("./models/Budget");
-
 const util = require("util");
 
 const PORT = process.env.PORT || 8000;
@@ -196,7 +194,7 @@ app.post("/api/first_budget", async (req, res) => {
   let currentMonth = months[month];
   let title = `${currentMonth} ${year}`;
 
-  const newBudget = new Budget({
+  const newBudget = {
     title,
     month,
     year,
@@ -211,15 +209,18 @@ app.post("/api/first_budget", async (req, res) => {
       { name: "Gas", budgeted: 0, spent: 0, balance: 0 },
       { name: "Personal", budgeted: 0, spent: 0, balance: 0 },
     ],
+    transactions: [],
+  };
+
+  User.findOne({ googleId: req.body.googleId }).then((existingUser) => {
+    if (existingUser) {
+      existingUser.budgets.push(newBudget);
+      existingUser.save();
+      res.json(existingUser);
+    } else {
+      res.sendStatus(404);
+    }
   });
-
-  try {
-    const savedNewBudget = await newBudget.save();
-
-    res.status(200).send(savedNewBudget);
-  } catch (err) {
-    res.status(400).send(err);
-  }
 });
 
 // Have Node serve the files for our built React app

@@ -44,8 +44,8 @@ export const savePlaidCredentials = async (
   };
 };
 
-export const createInitialBudget = async () => {
-  const response = await axios.post(`/api/first_budget`);
+export const createInitialBudget = async (googleId) => {
+  const response = await axios.post(`/api/first_budget`, { googleId });
   return {
     type: CREATE_INITIAL_BUDGET,
     payload: response,

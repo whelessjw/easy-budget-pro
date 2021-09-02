@@ -1,4 +1,5 @@
 import {
+  CREATE_INITIAL_BUDGET,
   HANDLE_LOGIN,
   HANDLE_LOGOUT,
   SAVE_PLAID_CREDENTIALS,
@@ -13,6 +14,9 @@ export const userReducer = function (state = null, action) {
       return null;
 
     case SAVE_PLAID_CREDENTIALS:
+      return action.payload.data;
+
+    case CREATE_INITIAL_BUDGET:
       return action.payload.data;
 
     default:

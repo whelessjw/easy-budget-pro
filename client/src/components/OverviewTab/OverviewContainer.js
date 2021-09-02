@@ -8,9 +8,10 @@ import Transactions from "./Transactions";
 
 export default function OverviewContainer() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   const handleClick = () => {
-    dispatch(createInitialBudget());
+    dispatch(createInitialBudget(user.googleId));
   };
 
   const currentBudget = useSelector((state) => state.currentBudget);
@@ -21,7 +22,7 @@ export default function OverviewContainer() {
       <Container>
         <Row>
           <Col className="text-center">
-            {!currentBudget && (
+            {user.budgets.length === 0 && (
               <Button onClick={handleClick} variant="primary">
                 Create Your First Budget
               </Button>

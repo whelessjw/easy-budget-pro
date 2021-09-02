@@ -14,7 +14,7 @@ export default function OverviewContainer() {
     dispatch(createInitialBudget(user.googleId));
   };
 
-  const currentBudget = useSelector((state) => state.currentBudget);
+  const currentBudget = useSelector((state) => state.user.currentBudget);
 
   return (
     <>

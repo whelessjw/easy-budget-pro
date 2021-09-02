@@ -59,10 +59,15 @@ export const deleteCategory = (name) => {
   };
 };
 
-export const editMonthlyIncome = (amount) => {
+export const editMonthlyIncome = async (googleId, budgetId, monthlyIncome) => {
+  const response = await axios.post("/api/monthly_income", {
+    googleId,
+    budgetId,
+    monthlyIncome,
+  });
   return {
     type: EDIT_MONTHLY_INCOME,
-    payload: amount,
+    payload: response,
   };
 };
 

@@ -4,9 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { addTransactionToCategory } from "../../actions";
 
 export default function Transactions() {
-  const transactions = useSelector((state) => state.currentBudget.transactions);
-  const currentBudget = useSelector((state) => state.currentBudget);
-  const categories = useSelector((state) => state.currentBudget.categories);
+  const transactions = useSelector(
+    (state) => state.user.currentBudget.transactions
+  );
+  const currentBudget = useSelector((state) => state.user.currentBudget);
+  const categories = useSelector(
+    (state) => state.user.currentBudget.categories
+  );
 
   const dispatch = useDispatch();
   const handleCategorySelect = (transaction, categoryID) => {

@@ -5,10 +5,14 @@ import CurrencyInput from "react-currency-input-field";
 import { editMonthlyIncome } from "../../actions";
 
 export default function Budget() {
-  const budgetTitle = useSelector((state) => state.currentBudget.title);
-  const categories = useSelector((state) => state.currentBudget.categories);
+  const budgetTitle = useSelector((state) => state.user.currentBudget.title);
+  const budgetId = useSelector((state) => state.user.currentBudget._id);
+  const googleId = useSelector((state) => state.user.googleId);
+  const categories = useSelector(
+    (state) => state.user.currentBudget.categories
+  );
   const monthlyIncome = useSelector(
-    (state) => state.currentBudget.monthlyIncome
+    (state) => state.user.currentBudget.monthlyIncome
   );
   const totalAmountBudgeted = categories.reduce((total, category) => {
     return category.budgeted + total;
@@ -41,9 +45,11 @@ export default function Budget() {
                 decimalsLimit={2}
                 onValueChange={(value, name) => {
                   if (value) {
-                    dispatch(editMonthlyIncome(parseFloat(value)));
+                    dispatch(
+                      editMonthlyIncome(googleId, budgetId, parseFloat(value))
+                    );
                   } else {
-                    dispatch(editMonthlyIncome(0));
+                    dispatch(editMonthlyIncome(googleId, budgetId, 0));
                   }
                 }}
               />

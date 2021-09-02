@@ -9,6 +9,7 @@ const app = express();
 const bodyParser = require("body-parser");
 
 const User = require("./models/User");
+const Budget = require("./models/Budget");
 
 const util = require("util");
 
@@ -194,7 +195,7 @@ app.post("/api/first_budget", async (req, res) => {
   let currentMonth = months[month];
   let title = `${currentMonth} ${year}`;
 
-  const newBudget = {
+  const newBudget = new Budget({
     title,
     month,
     year,
@@ -210,17 +211,44 @@ app.post("/api/first_budget", async (req, res) => {
       { name: "Personal", budgeted: 0, spent: 0, balance: 0 },
     ],
     transactions: [],
-  };
-
-  User.findOne({ googleId: req.body.googleId }).then((existingUser) => {
-    if (existingUser) {
-      existingUser.budgets.push(newBudget);
-      existingUser.save();
-      res.json(existingUser);
-    } else {
-      res.sendStatus(404);
-    }
   });
+
+  try {
+    await newBudget.save();
+    const savedBudget = await Budget.findById(newBudget._id);
+
+    const user = await User.findOne({ googleId: req.body.googleId })
+      .populate("budgets")
+      .populate("currentBudget");
+
+    user.budgets.push(savedBudget);
+    user.currentBudget = savedBudget;
+    user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+app.post("/api/monthly_income", async (req, res) => {
+  const googleId = req.body.googleId;
+  const budgetId = req.body.budgetId;
+  const monthlyIncome = req.body.monthlyIncome;
+  try {
+    Budget.findById(budgetId).then((budget) => {
+      budget.monthlyIncome = monthlyIncome;
+      budget.save();
+    });
+
+    User.findOne({ googleId: googleId })
+      .populate("budgets")
+      .populate("currentBudget")
+      .then((existingUser) => {
+        res.json(existingUser);
+      });
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 // Have Node serve the files for our built React app

@@ -3,6 +3,7 @@ import {
   HANDLE_LOGIN,
   HANDLE_LOGOUT,
   SAVE_PLAID_CREDENTIALS,
+  EDIT_MONTHLY_INCOME,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
@@ -17,6 +18,9 @@ export const userReducer = function (state = null, action) {
       return action.payload.data;
 
     case CREATE_INITIAL_BUDGET:
+      return action.payload.data;
+
+    case EDIT_MONTHLY_INCOME:
       return action.payload.data;
 
     default:

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { PlaidLink } from "react-plaid-link";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { saveAccessTokenAndItemID } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { savePlaidCredentials } from "../../actions";
 
 export default function PlaidLinkButton() {
   const [token, setToken] = useState(null);
+  const googleID = useSelector((state) => state.user?.googleId);
 
   const dispatch = useDispatch();
 
@@ -21,14 +22,14 @@ export default function PlaidLinkButton() {
 
   const onSuccess = async (public_token, metadata) => {
     // send public_token to server
-    const accessTokenAndItemID = await axios.post(
-      "/api/exchange_public_token",
-      {
-        public_token: public_token,
-      }
-    );
+    const response = await axios.post("/api/exchange_public_token", {
+      public_token: public_token,
+    });
 
-    dispatch(saveAccessTokenAndItemID(accessTokenAndItemID));
+    const plaidAccessToken = response.data.accessToken;
+    const plaidItemID = response.data.itemID;
+
+    dispatch(savePlaidCredentials(googleID, plaidAccessToken, plaidItemID));
   };
 
   // The pre-built PlaidLink component uses the usePlaidLink hook under the hood.

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const { urlencoded } = require("express");
@@ -6,11 +7,7 @@ const cors = require("cors");
 const keys = require("./config/keys");
 const app = express();
 const bodyParser = require("body-parser");
-require("dotenv").config();
 
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const cookieSession = require("cookie-session");
 const User = require("./models/User");
 
 const Budget = require("./models/Budget");
@@ -32,75 +29,6 @@ mongoose.connect(
 app.use(bodyParser.json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
-
-app.use(
-  cookieSession({
-    name: "Google Login Cookie",
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: ["helloworld"],
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session({ saveUninitialized: false, resave: false }));
-
-passport.use(
-  "google",
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-    },
-    (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id }).then((existingUser) => {
-        if (existingUser) {
-          // we already have a record with the given profile ID
-          done(null, existingUser);
-        } else {
-          // we don't have a user record with this ID, make a new record!
-          new User({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-          })
-            .save()
-            .then((user) => done(null, user));
-        }
-      });
-    }
-  )
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id, function (err, user) {
-    done(null, user);
-  });
-});
-
-const googleAuth = passport.authenticate("google", {
-  scope: ["profile", "email"],
-  prompt: "select_account",
-});
-
-app.get("/auth/google", googleAuth);
-
-app.get("/auth/google/callback", googleAuth, (req, res) => {
-  res.send("You are now logged in via Google!");
-});
-
-app.get("/api/current_user", (req, res) => {
-  res.send(req.user);
-});
-
-app.get("/api/logout", (req, res) => {
-  req.logout();
-  res.send("Logged Out");
-});
 
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 const configuration = new Configuration({
@@ -129,6 +57,26 @@ let months = [
   "November",
   "December",
 ];
+
+app.post("/api/login", async function (req, res) {
+  User.findOne({ googleId: req.body.googleId }).then((existingUser) => {
+    if (existingUser) {
+      // we already have a record with the given profile ID
+      //done(null, existingUser);
+      res.json(existingUser);
+    } else {
+      // we don't have a user record with this ID, make a new record!
+      const newUser = new User({
+        googleId: req.body.googleId,
+        name: req.body.name,
+        email: req.body.email,
+      });
+
+      newUser.save();
+      res.json(newUser);
+    }
+  });
+});
 
 app.post("/api/create_link_token", async function (req, res) {
   // Get the client_user_id by searching for the current user
@@ -172,6 +120,23 @@ app.post("/api/exchange_public_token", async function (req, res, next) {
     // handle error
     console.log(error);
   }
+});
+
+app.post("/api/save_plaid_credentials", async function (req, res, next) {
+  const googleID = req.body.googleID;
+  const plaidAccessToken = req.body.plaidAccessToken;
+  const plaidItemID = req.body.plaidItemID;
+
+  User.findOne({ googleId: googleID }).then((existingUser) => {
+    if (existingUser) {
+      existingUser.plaidAccessToken = plaidAccessToken;
+      existingUser.plaidItemID = plaidItemID;
+      existingUser.save();
+      res.json(existingUser);
+    } else {
+      res.sendStatus(404);
+    }
+  });
 });
 
 app.get("/api/get_balances", async (req, res) => {

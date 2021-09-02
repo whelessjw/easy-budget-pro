@@ -1,15 +1,46 @@
 import axios from "axios";
-export const SAVE_ACCESS_TOKEN_AND_ITEM_ID = "SAVE_ACCESS_TOKEN_AND_ITEM_ID";
+export const SAVE_PLAID_CREDENTIALS = "SAVE_PLAID_CREDENTIALS";
 export const CREATE_INITIAL_BUDGET = "CREATE_INITIAL_BUDGET";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_MONTHLY_INCOME = "EDIT_MONTHLY_INCOME";
 export const EDIT_BUDGETED_AMOUNT = "EDIT_BUDGETED_AMOUNT";
 export const ADD_TRANSACTION_TO_CATEGORY = "ADD_TRANSACTION_TO_CATEGORY";
+export const HANDLE_LOGIN = "HANDLE_LOGIN";
+export const HANDLE_LOGOUT = "HANDLE_LOGOUT";
 
-export const saveAccessTokenAndItemID = async (accessTokenAndItemID) => {
+export const handleLogin = async (googleId, name, email) => {
+  const response = await axios.post(`api/login`, {
+    googleId,
+    name,
+    email,
+  });
+
   return {
-    type: SAVE_ACCESS_TOKEN_AND_ITEM_ID,
-    payload: accessTokenAndItemID,
+    type: HANDLE_LOGIN,
+    payload: response,
+  };
+};
+
+export const handleLogout = () => {
+  return {
+    type: HANDLE_LOGOUT,
+  };
+};
+
+export const savePlaidCredentials = async (
+  googleID,
+  plaidAccessToken,
+  plaidItemID
+) => {
+  const response = await axios.post(`/api/save_plaid_credentials`, {
+    googleID,
+    plaidAccessToken,
+    plaidItemID,
+  });
+
+  return {
+    type: SAVE_PLAID_CREDENTIALS,
+    payload: response,
   };
 };
 

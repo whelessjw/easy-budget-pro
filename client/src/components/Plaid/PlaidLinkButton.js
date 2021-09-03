@@ -13,12 +13,12 @@ export default function PlaidLinkButton() {
   // generate a link_token
   useEffect(() => {
     async function createLinkToken() {
-      let response = await axios.post("/api/create_link_token");
+      let response = await axios.post("/api/create_link_token", { googleID });
       const link_token = response.data;
       setToken(link_token);
     }
     createLinkToken();
-  }, [setToken]);
+  }, [setToken, googleID]);
 
   const onSuccess = async (public_token, metadata) => {
     // send public_token to server

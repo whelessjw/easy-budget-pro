@@ -84,7 +84,7 @@ app.post("/api/create_link_token", async function (req, res) {
   // Get the client_user_id by searching for the current user
   // const user = await User.find(...);
   // const clientUserId = user.id;
-  const clientUserId = "1234";
+  const clientUserId = req.body.googleID;
   const request = {
     user: {
       // This should correspond to a unique id for the current user.

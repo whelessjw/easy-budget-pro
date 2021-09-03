@@ -112,8 +112,10 @@ export default function Budget() {
           {categories &&
             categories.map((category) => (
               <CategoryRow
-                key={category.name}
-                id={category.categoryId}
+                key={category._id}
+                googleId={googleId}
+                budgetId={budgetId}
+                categoryId={category._id}
                 name={category.name}
                 budgeted={category.budgeted}
                 spent={category.spent}

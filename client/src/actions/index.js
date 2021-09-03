@@ -71,10 +71,22 @@ export const editMonthlyIncome = async (googleId, budgetId, monthlyIncome) => {
   };
 };
 
-export const editBudgetedAmount = (amount, categoryId) => {
+export const editBudgetedAmount = async (
+  googleId,
+  budgetId,
+  categoryId,
+  amount
+) => {
+  const response = await axios.post("/api/category_budget_amount", {
+    googleId,
+    budgetId,
+    categoryId,
+    amount,
+  });
+
   return {
     type: EDIT_BUDGETED_AMOUNT,
-    payload: { amount, categoryId },
+    payload: response,
   };
 };
 

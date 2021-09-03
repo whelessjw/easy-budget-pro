@@ -6,7 +6,15 @@ import { useState } from "react";
 import { deleteCategory, editBudgetedAmount } from "../../actions";
 import CurrencyInput from "react-currency-input-field";
 
-export default function CategoryRow({ name, budgeted, spent, balance, id }) {
+export default function CategoryRow({
+  googleId,
+  budgetId,
+  name,
+  budgeted,
+  spent,
+  balance,
+  categoryId,
+}) {
   const [modalShow, setModalShow] = useState(false);
   const dispatch = useDispatch();
 
@@ -64,7 +72,7 @@ export default function CategoryRow({ name, budgeted, spent, balance, id }) {
         </td>
         <td className="text-center">
           <CurrencyInput
-            id={id}
+            id={categoryId}
             size={9}
             allowNegativeValue={false}
             name="input-monthly-income"
@@ -74,9 +82,23 @@ export default function CategoryRow({ name, budgeted, spent, balance, id }) {
             decimalsLimit={2}
             onValueChange={(value) => {
               if (value) {
-                dispatch(editBudgetedAmount(parseFloat(value), id));
+                dispatch(
+                  editBudgetedAmount(
+                    googleId,
+                    budgetId,
+                    categoryId,
+                    parseFloat(value)
+                  )
+                );
               } else {
-                dispatch(editBudgetedAmount(0, id));
+                dispatch(
+                  editBudgetedAmount(
+                    googleId,
+                    budgetId,
+                    categoryId,
+                    parseFloat(value)
+                  )
+                );
               }
             }}
           />

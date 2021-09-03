@@ -4,6 +4,7 @@ import {
   HANDLE_LOGOUT,
   SAVE_PLAID_CREDENTIALS,
   EDIT_MONTHLY_INCOME,
+  EDIT_BUDGETED_AMOUNT,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
@@ -23,7 +24,53 @@ export const userReducer = function (state = null, action) {
     case EDIT_MONTHLY_INCOME:
       return action.payload.data;
 
+    case EDIT_BUDGETED_AMOUNT:
+      return action.payload.data;
+
     default:
       return state;
   }
 };
+
+////////////////////////////////////////////////////////////////
+
+//     case DELETE_CATEGORY:
+//       const newCategoryState = { ...state };
+//       newCategoryState.categories = state.categories.filter(
+//         (c) => c.name !== action.payload
+//       );
+
+//       return newCategoryState;
+
+//     case ADD_TRANSACTION_TO_CATEGORY:
+//       const budget = { ...state };
+
+//       budget.transactions = budget.transactions.map((t) => {
+//         if (t.transaction_id === action.payload.transaction.transaction_id) {
+//           t.budgetCategoryID = action.payload.categoryID;
+//           return t;
+//         } else {
+//           return t;
+//         }
+//       });
+
+//       budget.categories = budget.categories.map((c) => {
+//         c.spent = 0;
+
+//         budget.transactions.forEach((t) => {
+//           if (c.categoryId === t.budgetCategoryID) {
+//             c.spent += t.amount;
+//           }
+//         });
+
+//         c.balance = c.budgeted - c.spent;
+
+//         return c;
+//       });
+
+//       return budget;
+
+//     default:
+//       return state;
+//   }
+// };

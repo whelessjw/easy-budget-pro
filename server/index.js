@@ -129,16 +129,19 @@ app.post("/api/save_plaid_credentials", async function (req, res, next) {
   const plaidAccessToken = req.body.plaidAccessToken;
   const plaidItemID = req.body.plaidItemID;
 
-  User.findOne({ googleId: googleID }).then((existingUser) => {
-    if (existingUser) {
-      existingUser.plaidAccessToken = plaidAccessToken;
-      existingUser.plaidItemID = plaidItemID;
-      existingUser.save();
-      res.json(existingUser);
-    } else {
-      res.sendStatus(404);
-    }
-  });
+  User.findOne({ googleId: googleID })
+    .populate("budgets")
+    .populate("currentBudget")
+    .then((existingUser) => {
+      if (existingUser) {
+        existingUser.plaidAccessToken = plaidAccessToken;
+        existingUser.plaidItemID = plaidItemID;
+        existingUser.save();
+        res.json(existingUser);
+      } else {
+        res.sendStatus(404);
+      }
+    });
 });
 
 app.get("/api/get_balances", async (req, res) => {
@@ -242,6 +245,31 @@ app.post("/api/monthly_income", async (req, res) => {
       budget.monthlyIncome = monthlyIncome;
       budget.save();
     });
+
+    User.findOne({ googleId: googleId })
+      .populate("budgets")
+      .populate("currentBudget")
+      .then((existingUser) => {
+        res.json(existingUser);
+      });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+app.post("/api/category_budget_amount", async (req, res) => {
+  const googleId = req.body.googleId;
+  const budgetId = req.body.budgetId;
+  const categoryId = req.body.categoryId;
+  const amount = req.body.amount;
+  try {
+    const budget = await Budget.findById(budgetId);
+    const categoryToUpdate = await budget.categories.id(categoryId);
+    categoryToUpdate.budgeted = amount;
+    categoryToUpdate.balance =
+      categoryToUpdate.budgeted - categoryToUpdate.spent;
+
+    budget.save();
 
     User.findOne({ googleId: googleId })
       .populate("budgets")

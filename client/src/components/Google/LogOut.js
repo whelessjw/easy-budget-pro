@@ -9,7 +9,7 @@ export default function LogOut() {
   };
 
   return (
-    <button onClick={handleClick} type="button" className="btn btn-danger">
+    <button onClick={handleClick} type="button" className="btn btn-light">
       Log Out
     </button>
   );

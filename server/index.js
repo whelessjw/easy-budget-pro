@@ -128,6 +128,7 @@ app.post("/api/save_plaid_credentials", async function (req, res, next) {
   const googleID = req.body.googleID;
   const plaidAccessToken = req.body.plaidAccessToken;
   const plaidItemID = req.body.plaidItemID;
+  const bankAccountInfo = req.body.bankAccountInfo;
 
   User.findOne({ googleId: googleID })
     .populate("budgets")
@@ -136,6 +137,7 @@ app.post("/api/save_plaid_credentials", async function (req, res, next) {
       if (existingUser) {
         existingUser.plaidAccessToken = plaidAccessToken;
         existingUser.plaidItemID = plaidItemID;
+        existingUser.bankAccountInfo = bankAccountInfo;
         existingUser.save();
         res.json(existingUser);
       } else {
@@ -158,7 +160,7 @@ app.get("/api/get_balances", async (req, res) => {
   }
 });
 
-app.get("/api/get_transactions", async (req, res) => {
+app.post("/api/get_transactions", async (req, res) => {
   const request = {
     access_token: req.body.accessToken,
     start_date: req.body.startDate,
@@ -175,9 +177,9 @@ app.get("/api/get_transactions", async (req, res) => {
     // transactions and retrieve all available data
     while (transactions.length < total_transactions) {
       const paginatedRequest = {
-        access_token: accessToken,
-        start_date: "2018-01-01",
-        end_date: "2020-02-01",
+        access_token: req.body.accessToken,
+        start_date: req.body.startDate,
+        end_date: req.body.endDate,
         options: {
           offset: transactions.length,
         },
@@ -185,12 +187,73 @@ app.get("/api/get_transactions", async (req, res) => {
       const paginatedResponse = await client.transactionsGet(paginatedRequest);
       transactions = transactions.concat(paginatedResponse.data.transactions);
     }
-    res.json(transactions);
-  } catch {
-    (err) => {
-      // handle error
-      console.log(err);
-    };
+    const budget = await Budget.findById(req.body.currentBudgetId);
+    transactions.forEach((t) => {
+      if (!budget.transactions.get(t.transaction_id)) {
+        t.categoryId = "uncategorized";
+        budget.transactions.set(t.transaction_id, t);
+      }
+      // {
+      //   transaction_id: t.transaction_id,
+      //   date: t.date,
+      //   amount: t.amount,
+      //   merchant_name: t.merchant_name,
+      // };
+    });
+
+    await budget.save();
+
+    User.findOne({ googleId: req.body.googleId })
+      .populate("budgets")
+      .populate("currentBudget")
+      .then((existingUser) => {
+        res.json(existingUser);
+      });
+  } catch (err) {
+    // handle error
+    console.log(err);
+  }
+});
+
+app.post("/api/assign_transaction_to_category", async (req, res) => {
+  const googleId = req.body.googleId;
+  const currentBudgetId = req.body.currentBudgetId;
+  const transactionId = req.body.transactionId;
+  const categoryId = req.body.categoryId;
+
+  try {
+    const budget = await Budget.findById(currentBudgetId);
+    const transaction = budget.transactions.get(transactionId);
+    transaction.categoryId = categoryId;
+    console.log(transaction.categoryId);
+
+    budget.transactions.set(transactionId, transaction);
+
+    // budget.categories = budget.categories.map((c) => {
+    //   c.spent = 0;
+
+    //   budget.transactions.forEach((t) => {
+    //     if (c._id.toString() === t.categoryId) {
+    //       c.spent += t.amount;
+    //     }
+    //   });
+
+    //   c.balance = c.budgeted - c.spent;
+
+    //   return c;
+    // });
+
+    await budget.save();
+
+    User.findOne({ googleId: googleId })
+      .populate("budgets")
+      .populate("currentBudget")
+      .then((existingUser) => {
+        res.json(existingUser);
+      });
+  } catch (err) {
+    // handle error
+    console.error(err);
   }
 });
 
@@ -216,7 +279,7 @@ app.post("/api/first_budget", async (req, res) => {
       { name: "Gas", budgeted: 0, spent: 0, balance: 0 },
       { name: "Personal", budgeted: 0, spent: 0, balance: 0 },
     ],
-    transactions: [],
+    transactions: {},
   });
 
   try {

@@ -25,11 +25,23 @@ export default function PlaidLinkButton() {
     const response = await axios.post("/api/exchange_public_token", {
       public_token: public_token,
     });
-
     const plaidAccessToken = response.data.accessToken;
     const plaidItemID = response.data.itemID;
+    const bankAccountInfo = {
+      account: metadata.account,
+      account_id: metadata.account_id,
+      accounts: metadata.accounts,
+      institution: metadata.institution,
+    };
 
-    dispatch(savePlaidCredentials(googleID, plaidAccessToken, plaidItemID));
+    dispatch(
+      savePlaidCredentials(
+        googleID,
+        plaidAccessToken,
+        plaidItemID,
+        bankAccountInfo
+      )
+    );
   };
 
   // The pre-built PlaidLink component uses the usePlaidLink hook under the hood.

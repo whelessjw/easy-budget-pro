@@ -5,6 +5,8 @@ import {
   SAVE_PLAID_CREDENTIALS,
   EDIT_MONTHLY_INCOME,
   EDIT_BUDGETED_AMOUNT,
+  GET_TRANSACTIONS,
+  ASSIGN_TRANSACTION_TO_CATEGORY,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
@@ -25,6 +27,12 @@ export const userReducer = function (state = null, action) {
       return action.payload.data;
 
     case EDIT_BUDGETED_AMOUNT:
+      return action.payload.data;
+
+    case GET_TRANSACTIONS:
+      return action.payload.data;
+
+    case ASSIGN_TRANSACTION_TO_CATEGORY:
       return action.payload.data;
 
     default:

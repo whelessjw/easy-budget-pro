@@ -4,9 +4,10 @@ export const CREATE_INITIAL_BUDGET = "CREATE_INITIAL_BUDGET";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_MONTHLY_INCOME = "EDIT_MONTHLY_INCOME";
 export const EDIT_BUDGETED_AMOUNT = "EDIT_BUDGETED_AMOUNT";
-export const ADD_TRANSACTION_TO_CATEGORY = "ADD_TRANSACTION_TO_CATEGORY";
+export const ASSIGN_TRANSACTION_TO_CATEGORY = "ASSIGN_TRANSACTION_TO_CATEGORY";
 export const HANDLE_LOGIN = "HANDLE_LOGIN";
 export const HANDLE_LOGOUT = "HANDLE_LOGOUT";
+export const GET_TRANSACTIONS = "GET_TRANSACTIONS";
 
 export const handleLogin = async (googleId, name, email) => {
   const response = await axios.post(`api/login`, {
@@ -30,12 +31,14 @@ export const handleLogout = () => {
 export const savePlaidCredentials = async (
   googleID,
   plaidAccessToken,
-  plaidItemID
+  plaidItemID,
+  bankAccountInfo
 ) => {
   const response = await axios.post(`/api/save_plaid_credentials`, {
     googleID,
     plaidAccessToken,
     plaidItemID,
+    bankAccountInfo,
   });
 
   return {
@@ -90,12 +93,43 @@ export const editBudgetedAmount = async (
   };
 };
 
-export const addTransactionToCategory = (transaction, categoryID) => {
+export const addTransactionToCategory = async (
+  transactionId,
+  categoryId,
+  currentBudgetId,
+  googleId
+) => {
+  const response = await axios.post(`/api/assign_transaction_to_category`, {
+    transactionId,
+    categoryId,
+    currentBudgetId,
+    googleId,
+  });
   return {
-    type: ADD_TRANSACTION_TO_CATEGORY,
-    payload: {
-      transaction,
-      categoryID,
-    },
+    type: ASSIGN_TRANSACTION_TO_CATEGORY,
+    payload: response,
+  };
+};
+
+export const getTransactions = async (
+  accessToken,
+  primaryAccount,
+  startDate,
+  endDate,
+  currentBudgetId,
+  googleId
+) => {
+  const response = await axios.post("/api/get_transactions", {
+    accessToken,
+    primaryAccount,
+    startDate,
+    endDate,
+    currentBudgetId,
+    googleId,
+  });
+
+  return {
+    type: GET_TRANSACTIONS,
+    payload: response,
   };
 };

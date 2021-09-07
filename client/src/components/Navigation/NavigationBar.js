@@ -1,7 +1,6 @@
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import PlaidLinkButton from "../Plaid/PlaidLinkButton";
 import LogIn from "../Google/LogIn";
 import LogOut from "../Google/LogOut";
 import { useSelector } from "react-redux";

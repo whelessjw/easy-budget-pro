@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Form } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { addTransactionToCategory, getTransactions } from "../../actions";
+import PlaidLinkButton from "../Plaid/PlaidLinkButton";
 
 export default function Transactions() {
   const googleId = useSelector((state) => state.user.googleId);
@@ -60,14 +61,17 @@ export default function Transactions() {
   };
 
   let formID = 0;
-  let rowKey = 0;
 
   return (
     <>
-      {!primaryAccountId && `Connect a bank account to view your transactions`}
+      {!primaryAccountId && (
+        <div className="text-center">
+          <h3>Connect a bank account to view your transactions</h3>
+          <PlaidLinkButton />
+        </div>
+      )}
       {primaryAccountId && (
         <>
-          {" "}
           <div className="text-center">
             <button
               onClick={handleClick}
@@ -134,6 +138,7 @@ export default function Transactions() {
                           <Form.Group controlId={formID++}>
                             <Form.Select
                               id="inlineFormCustomSelect"
+                              defaultValue={transaction.categoryId}
                               onChange={(e) =>
                                 handleCategorySelect(
                                   transaction.transaction_id,
@@ -142,7 +147,9 @@ export default function Transactions() {
                               }
                               required
                             >
-                              <option value="">Select Category</option>
+                              <option value="uncategorized">
+                                Select Category
+                              </option>
                               {categories.map((category) => (
                                 <option key={category._id} value={category._id}>
                                   {category.name}

@@ -58,7 +58,14 @@ export default function PlaidLinkButton() {
       // onExit={...}
       // onEvent={...}
     >
-      Connect a bank account
+      <button
+        type="button"
+        className="btn btn-success"
+        token={token}
+        onSuccess={onSuccess}
+      >
+        Connect a bank account
+      </button>
     </PlaidLink>
   );
 }

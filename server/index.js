@@ -190,15 +190,18 @@ app.post("/api/get_transactions", async (req, res) => {
     const budget = await Budget.findById(req.body.currentBudgetId);
     transactions.forEach((t) => {
       if (!budget.transactions.get(t.transaction_id)) {
-        t.categoryId = "uncategorized";
+        if (t.amount < 0) {
+          t.categoryId = "Income";
+        } else {
+          t.categoryId = "Uncategorized";
+        }
+        budget.transactions.set(t.transaction_id, t);
+      } else {
+        //update transaction info and add the current assigned category
+        const categoryId = budget.transactions.get(t.transaction_id).categoryId;
+        t.categoryId = categoryId;
         budget.transactions.set(t.transaction_id, t);
       }
-      // {
-      //   transaction_id: t.transaction_id,
-      //   date: t.date,
-      //   amount: t.amount,
-      //   merchant_name: t.merchant_name,
-      // };
     });
 
     await budget.save();
@@ -225,23 +228,23 @@ app.post("/api/assign_transaction_to_category", async (req, res) => {
     const budget = await Budget.findById(currentBudgetId);
     const transaction = budget.transactions.get(transactionId);
     transaction.categoryId = categoryId;
-    console.log(transaction.categoryId);
 
     budget.transactions.set(transactionId, transaction);
+    budget.markModified("transactions");
 
-    // budget.categories = budget.categories.map((c) => {
-    //   c.spent = 0;
+    budget.categories = budget.categories.map((c) => {
+      c.spent = 0;
 
-    //   budget.transactions.forEach((t) => {
-    //     if (c._id.toString() === t.categoryId) {
-    //       c.spent += t.amount;
-    //     }
-    //   });
+      budget.transactions.forEach((t) => {
+        if (c._id.toString() === t.categoryId) {
+          c.spent += t.amount;
+        }
+      });
 
-    //   c.balance = c.budgeted - c.spent;
+      c.balance = c.budgeted - c.spent;
 
-    //   return c;
-    // });
+      return c;
+    });
 
     await budget.save();
 

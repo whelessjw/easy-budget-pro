@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 
 export default function NavigationBar() {
   const user = useSelector((state) => state.user);
-  const plaidAccessToken = useSelector((state) => state.user?.plaidAccessToken);
 
   return (
     <Navbar bg="primary" variant="dark">
@@ -20,7 +19,6 @@ export default function NavigationBar() {
         </LinkContainer>
         <Nav className="justify-content-end">
           {!user && <LogIn />}
-          {user && !plaidAccessToken && <PlaidLinkButton />}
           {user && <LogOut />}
           {/* <Nav.Link href="/auth/google">Log in with Google</Nav.Link>
           <Nav.Link href="#log-out">Log Out</Nav.Link> */}

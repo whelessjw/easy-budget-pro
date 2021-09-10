@@ -8,12 +8,11 @@ export const ASSIGN_TRANSACTION_TO_CATEGORY = "ASSIGN_TRANSACTION_TO_CATEGORY";
 export const HANDLE_LOGIN = "HANDLE_LOGIN";
 export const HANDLE_LOGOUT = "HANDLE_LOGOUT";
 export const GET_TRANSACTIONS = "GET_TRANSACTIONS";
+export const CHECK_IF_LOGGED_IN = "CHECK_IF_LOGGED_IN";
 
-export const handleLogin = async (googleId, name, email) => {
+export const handleLogin = async (tokenId) => {
   const response = await axios.post(`api/login`, {
-    googleId,
-    name,
-    email,
+    tokenId,
   });
 
   return {
@@ -22,7 +21,22 @@ export const handleLogin = async (googleId, name, email) => {
   };
 };
 
-export const handleLogout = () => {
+export const checkIfLoggedIn = async () => {
+  const response = await axios.get(
+    `/api/check_if_logged_in`,
+    {},
+    { withCredentials: true }
+  );
+
+  return {
+    type: CHECK_IF_LOGGED_IN,
+    payload: response,
+  };
+};
+
+export const handleLogout = async () => {
+  await axios.get("/api/logout");
+
   return {
     type: HANDLE_LOGOUT,
   };

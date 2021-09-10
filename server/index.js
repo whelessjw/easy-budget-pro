@@ -7,6 +7,10 @@ const cors = require("cors");
 const keys = require("./config/keys");
 const app = express();
 const bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+
+const { OAuth2Client } = require("google-auth-library");
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const User = require("./models/User");
 const Budget = require("./models/Budget");
@@ -28,6 +32,19 @@ mongoose.connect(
 app.use(bodyParser.json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
+// app.use(
+//   session({ secret: process.env.SESSION_SECRET, cookie: { maxAge: 60000 } })
+// );
+app.use(cookieParser());
+
+// app.use(async (req, res, next) => {
+//   const user = await User.findOne({ id: req.session.userId })
+//     .populate("budgets")
+//     .populate("currentBudget");
+
+//   req.user = user;
+//   next();
+// });
 
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 const configuration = new Configuration({
@@ -58,26 +75,49 @@ let months = [
 ];
 
 app.post("/api/login", async function (req, res) {
-  User.findOne({ googleId: req.body.googleId })
-    .populate("budgets")
-    .populate("currentBudget")
-    .then((existingUser) => {
-      if (existingUser) {
-        // we already have a record with the given profile ID
-        //done(null, existingUser);
-        res.json(existingUser);
-      } else {
-        // we don't have a user record with this ID, make a new record!
-        const newUser = new User({
-          googleId: req.body.googleId,
-          name: req.body.name,
-          email: req.body.email,
-        });
+  const token = req.body.tokenId;
 
-        newUser.save();
-        res.json(newUser);
-      }
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
+
+    const { email_verified, name, email } = ticket.getPayload();
+
+    if (email_verified) {
+      User.findOne({ email: email })
+        .populate("budgets")
+        .populate("currentBudget")
+        .then((existingUser) => {
+          if (existingUser) {
+            // we already have a record with the given profile ID
+            //done(null, existingUser);
+            //req.session.userId = existingUser._id;
+            res.cookie("session-token", token);
+            res.json(existingUser);
+          } else {
+            // we don't have a user record with this ID, make a new record!
+            const newUser = new User({
+              name,
+              email,
+            });
+
+            newUser.save();
+            //req.session.userId = newUser._id;
+            res.cookie("session-token", token);
+            res.json(newUser);
+          }
+        });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get("/api/logout", (req, res) => {
+  res.clearCookie("session-token");
+  res.json();
 });
 
 app.post("/api/create_link_token", async function (req, res) {
@@ -345,6 +385,31 @@ app.post("/api/category_budget_amount", async (req, res) => {
       });
   } catch (err) {
     res.status(400).send(err);
+  }
+});
+
+app.get("/api/check_if_logged_in", async (req, res, next) => {
+  let token = req.cookies["session-token"];
+  if (!token) res.json(null);
+
+  if (token) {
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const { email } = ticket.getPayload();
+
+      User.findOne({ email: email })
+        .populate("budgets")
+        .populate("currentBudget")
+        .then((existingUser) => {
+          req.user = existingUser;
+          res.json(existingUser);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   }
 });
 

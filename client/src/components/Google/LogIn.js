@@ -7,11 +7,9 @@ export default function LogIn() {
   const dispatch = useDispatch();
 
   const responseGoogle = (response) => {
-    const googleId = response.profileObj.googleId;
-    const name = response.profileObj.name;
-    const email = response.profileObj.email;
+    const tokenId = response.tokenId;
 
-    dispatch(handleLogin(googleId, name, email));
+    dispatch(handleLogin(tokenId));
   };
 
   return (

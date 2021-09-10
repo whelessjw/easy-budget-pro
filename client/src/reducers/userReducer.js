@@ -7,10 +7,14 @@ import {
   EDIT_BUDGETED_AMOUNT,
   GET_TRANSACTIONS,
   ASSIGN_TRANSACTION_TO_CATEGORY,
+  CHECK_IF_LOGGED_IN,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
   switch (action.type) {
+    case CHECK_IF_LOGGED_IN:
+      return action.payload.data;
+
     case HANDLE_LOGIN:
       return action.payload.data;
 

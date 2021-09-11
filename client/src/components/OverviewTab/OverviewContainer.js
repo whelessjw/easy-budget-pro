@@ -11,7 +11,7 @@ export default function OverviewContainer() {
   const user = useSelector((state) => state.user);
 
   const handleClick = () => {
-    dispatch(createInitialBudget(user.googleId));
+    dispatch(createInitialBudget());
   };
 
   const currentBudget = useSelector((state) => state.user.currentBudget);

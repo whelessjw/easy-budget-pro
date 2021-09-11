@@ -5,7 +5,6 @@ import { addTransactionToCategory, getTransactions } from "../../actions";
 import PlaidLinkButton from "../Plaid/PlaidLinkButton";
 
 export default function Transactions() {
-  const googleId = useSelector((state) => state.user.googleId);
   const transactions = useSelector((state) => {
     return Object.values(state.user.currentBudget.transactions);
   });
@@ -38,12 +37,7 @@ export default function Transactions() {
   const dispatch = useDispatch();
   const handleCategorySelect = (transactionId, categoryId) => {
     dispatch(
-      addTransactionToCategory(
-        transactionId,
-        categoryId,
-        currentBudget._id,
-        googleId
-      )
+      addTransactionToCategory(transactionId, categoryId, currentBudget._id)
     );
   };
 
@@ -54,8 +48,7 @@ export default function Transactions() {
         primaryAccountId,
         startDate,
         endDate,
-        currentBudget._id,
-        googleId
+        currentBudget._id
       )
     );
   };

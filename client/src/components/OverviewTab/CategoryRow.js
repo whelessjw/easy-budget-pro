@@ -7,7 +7,6 @@ import { deleteCategory, editBudgetedAmount } from "../../actions";
 import CurrencyInput from "react-currency-input-field";
 
 export default function CategoryRow({
-  googleId,
   budgetId,
   name,
   budgeted,
@@ -83,21 +82,11 @@ export default function CategoryRow({
             onValueChange={(value) => {
               if (value) {
                 dispatch(
-                  editBudgetedAmount(
-                    googleId,
-                    budgetId,
-                    categoryId,
-                    parseFloat(value)
-                  )
+                  editBudgetedAmount(budgetId, categoryId, parseFloat(value))
                 );
               } else {
                 dispatch(
-                  editBudgetedAmount(
-                    googleId,
-                    budgetId,
-                    categoryId,
-                    parseFloat(value)
-                  )
+                  editBudgetedAmount(budgetId, categoryId, parseFloat(value))
                 );
               }
             }}

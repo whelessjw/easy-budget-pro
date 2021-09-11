@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { PlaidLink } from "react-plaid-link";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { savePlaidCredentials } from "../../actions";
 
 export default function PlaidLinkButton() {
   const [token, setToken] = useState(null);
-  const googleID = useSelector((state) => state.user?.googleId);
 
   const dispatch = useDispatch();
 
   // generate a link_token
   useEffect(() => {
     async function createLinkToken() {
-      let response = await axios.post("/api/create_link_token", { googleID });
+      let response = await axios.post(
+        "/api/create_link_token",
+        {},
+        { withCredentials: true }
+      );
       const link_token = response.data;
       setToken(link_token);
     }
     createLinkToken();
-  }, [setToken, googleID]);
+  }, [setToken]);
 
   const onSuccess = async (public_token, metadata) => {
     // send public_token to server
@@ -35,12 +38,7 @@ export default function PlaidLinkButton() {
     };
 
     dispatch(
-      savePlaidCredentials(
-        googleID,
-        plaidAccessToken,
-        plaidItemID,
-        bankAccountInfo
-      )
+      savePlaidCredentials(plaidAccessToken, plaidItemID, bankAccountInfo)
     );
   };
 
@@ -58,14 +56,7 @@ export default function PlaidLinkButton() {
       // onExit={...}
       // onEvent={...}
     >
-      <button
-        type="button"
-        className="btn btn-success"
-        token={token}
-        onSuccess={onSuccess}
-      >
-        Connect a bank account
-      </button>
+      Connect a bank account
     </PlaidLink>
   );
 }

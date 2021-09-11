@@ -15,8 +15,6 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const User = require("./models/User");
 const Budget = require("./models/Budget");
 
-const util = require("util");
-
 const PORT = process.env.PORT || 8000;
 
 mongoose.connect(
@@ -32,19 +30,7 @@ mongoose.connect(
 app.use(bodyParser.json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
-// app.use(
-//   session({ secret: process.env.SESSION_SECRET, cookie: { maxAge: 60000 } })
-// );
 app.use(cookieParser());
-
-// app.use(async (req, res, next) => {
-//   const user = await User.findOne({ id: req.session.userId })
-//     .populate("budgets")
-//     .populate("currentBudget");
-
-//   req.user = user;
-//   next();
-// });
 
 const { Configuration, PlaidApi, PlaidEnvironments } = require("plaid");
 const configuration = new Configuration({
@@ -120,11 +106,11 @@ app.get("/api/logout", (req, res) => {
   res.json();
 });
 
-app.post("/api/create_link_token", async function (req, res) {
+app.post("/api/create_link_token", checkAuth, async function (req, res) {
   // Get the client_user_id by searching for the current user
   // const user = await User.find(...);
   // const clientUserId = user.id;
-  const clientUserId = req.body.googleID;
+  const clientUserId = req.user._id;
   const request = {
     user: {
       // This should correspond to a unique id for the current user.
@@ -160,13 +146,12 @@ app.post("/api/exchange_public_token", async function (req, res, next) {
   }
 });
 
-app.post("/api/save_plaid_credentials", async function (req, res, next) {
-  const googleID = req.body.googleID;
+app.post("/api/save_plaid_credentials", checkAuth, async function (req, res) {
   const plaidAccessToken = req.body.plaidAccessToken;
   const plaidItemID = req.body.plaidItemID;
   const bankAccountInfo = req.body.bankAccountInfo;
 
-  User.findOne({ googleId: googleID })
+  User.findOne({ email: req.user.email })
     .populate("budgets")
     .populate("currentBudget")
     .then((existingUser) => {
@@ -196,7 +181,7 @@ app.get("/api/get_balances", async (req, res) => {
   }
 });
 
-app.post("/api/get_transactions", async (req, res) => {
+app.post("/api/get_transactions", checkAuth, async (req, res) => {
   const request = {
     access_token: req.body.accessToken,
     start_date: req.body.startDate,
@@ -242,7 +227,7 @@ app.post("/api/get_transactions", async (req, res) => {
 
     await budget.save();
 
-    User.findOne({ googleId: req.body.googleId })
+    User.findOne({ email: req.user.email })
       .populate("budgets")
       .populate("currentBudget")
       .then((existingUser) => {
@@ -254,8 +239,7 @@ app.post("/api/get_transactions", async (req, res) => {
   }
 });
 
-app.post("/api/assign_transaction_to_category", async (req, res) => {
-  const googleId = req.body.googleId;
+app.post("/api/assign_transaction_to_category", checkAuth, async (req, res) => {
   const currentBudgetId = req.body.currentBudgetId;
   const transactionId = req.body.transactionId;
   const categoryId = req.body.categoryId;
@@ -284,7 +268,7 @@ app.post("/api/assign_transaction_to_category", async (req, res) => {
 
     await budget.save();
 
-    User.findOne({ googleId: googleId })
+    User.findOne({ email: req.user.email })
       .populate("budgets")
       .populate("currentBudget")
       .then((existingUser) => {
@@ -296,7 +280,7 @@ app.post("/api/assign_transaction_to_category", async (req, res) => {
   }
 });
 
-app.post("/api/first_budget", async (req, res) => {
+app.post("/api/first_budget", checkAuth, async (req, res) => {
   const date = new Date();
   let month = date.getMonth();
   let year = date.getFullYear();
@@ -325,7 +309,7 @@ app.post("/api/first_budget", async (req, res) => {
     await newBudget.save();
     const savedBudget = await Budget.findById(newBudget._id);
 
-    const user = await User.findOne({ googleId: req.body.googleId })
+    const user = await User.findOne({ email: req.user.email })
       .populate("budgets")
       .populate("currentBudget");
 
@@ -338,8 +322,7 @@ app.post("/api/first_budget", async (req, res) => {
   }
 });
 
-app.post("/api/monthly_income", async (req, res) => {
-  const googleId = req.body.googleId;
+app.post("/api/monthly_income", checkAuth, async (req, res) => {
   const budgetId = req.body.budgetId;
   const monthlyIncome = req.body.monthlyIncome;
   try {
@@ -348,7 +331,7 @@ app.post("/api/monthly_income", async (req, res) => {
       budget.save();
     });
 
-    User.findOne({ googleId: googleId })
+    User.findOne({ email: req.user.email })
       .populate("budgets")
       .populate("currentBudget")
       .then((existingUser) => {
@@ -359,8 +342,7 @@ app.post("/api/monthly_income", async (req, res) => {
   }
 });
 
-app.post("/api/category_budget_amount", async (req, res) => {
-  const googleId = req.body.googleId;
+app.post("/api/category_budget_amount", checkAuth, async (req, res) => {
   const budgetId = req.body.budgetId;
   const categoryId = req.body.categoryId;
   const amount = req.body.amount;
@@ -373,7 +355,7 @@ app.post("/api/category_budget_amount", async (req, res) => {
 
     budget.save();
 
-    User.findOne({ googleId: googleId })
+    User.findOne({ email: req.user.email })
       .populate("budgets")
       .populate("currentBudget")
       .then((existingUser) => {
@@ -408,6 +390,31 @@ app.get("/api/check_if_logged_in", async (req, res) => {
     }
   }
 });
+
+async function checkAuth(req, res, next) {
+  let token = req.cookies["session-token"];
+
+  if (token) {
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const { email } = ticket.getPayload();
+
+      User.findOne({ email: email })
+        .populate("budgets")
+        .populate("currentBudget")
+        .then((existingUser) => {
+          req.user = existingUser;
+          next();
+        });
+    } catch (err) {
+      console.log(err);
+      res.redirect("/");
+    }
+  }
+}
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));

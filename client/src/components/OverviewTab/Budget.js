@@ -7,7 +7,6 @@ import { editMonthlyIncome } from "../../actions";
 export default function Budget() {
   const budgetTitle = useSelector((state) => state.user.currentBudget.title);
   const budgetId = useSelector((state) => state.user.currentBudget._id);
-  const googleId = useSelector((state) => state.user.googleId);
   const categories = useSelector(
     (state) => state.user.currentBudget.categories
   );
@@ -45,11 +44,9 @@ export default function Budget() {
                 decimalsLimit={2}
                 onValueChange={(value, name) => {
                   if (value) {
-                    dispatch(
-                      editMonthlyIncome(googleId, budgetId, parseFloat(value))
-                    );
+                    dispatch(editMonthlyIncome(budgetId, parseFloat(value)));
                   } else {
-                    dispatch(editMonthlyIncome(googleId, budgetId, 0));
+                    dispatch(editMonthlyIncome(budgetId, 0));
                   }
                 }}
               />
@@ -113,7 +110,6 @@ export default function Budget() {
             categories.map((category) => (
               <CategoryRow
                 key={category._id}
-                googleId={googleId}
                 budgetId={budgetId}
                 categoryId={category._id}
                 name={category.name}

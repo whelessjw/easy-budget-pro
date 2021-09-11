@@ -43,17 +43,19 @@ export const handleLogout = async () => {
 };
 
 export const savePlaidCredentials = async (
-  googleID,
   plaidAccessToken,
   plaidItemID,
   bankAccountInfo
 ) => {
-  const response = await axios.post(`/api/save_plaid_credentials`, {
-    googleID,
-    plaidAccessToken,
-    plaidItemID,
-    bankAccountInfo,
-  });
+  const response = await axios.post(
+    `/api/save_plaid_credentials`,
+    {
+      plaidAccessToken,
+      plaidItemID,
+      bankAccountInfo,
+    },
+    { withCredentials: true }
+  );
 
   return {
     type: SAVE_PLAID_CREDENTIALS,
@@ -61,8 +63,12 @@ export const savePlaidCredentials = async (
   };
 };
 
-export const createInitialBudget = async (googleId) => {
-  const response = await axios.post(`/api/first_budget`, { googleId });
+export const createInitialBudget = async () => {
+  const response = await axios.post(
+    `/api/first_budget`,
+    {},
+    { withCredentials: true }
+  );
   return {
     type: CREATE_INITIAL_BUDGET,
     payload: response,
@@ -76,30 +82,31 @@ export const deleteCategory = (name) => {
   };
 };
 
-export const editMonthlyIncome = async (googleId, budgetId, monthlyIncome) => {
-  const response = await axios.post("/api/monthly_income", {
-    googleId,
-    budgetId,
-    monthlyIncome,
-  });
+export const editMonthlyIncome = async (budgetId, monthlyIncome) => {
+  const response = await axios.post(
+    "/api/monthly_income",
+    {
+      budgetId,
+      monthlyIncome,
+    },
+    { withCredentials: true }
+  );
   return {
     type: EDIT_MONTHLY_INCOME,
     payload: response,
   };
 };
 
-export const editBudgetedAmount = async (
-  googleId,
-  budgetId,
-  categoryId,
-  amount
-) => {
-  const response = await axios.post("/api/category_budget_amount", {
-    googleId,
-    budgetId,
-    categoryId,
-    amount,
-  });
+export const editBudgetedAmount = async (budgetId, categoryId, amount) => {
+  const response = await axios.post(
+    "/api/category_budget_amount",
+    {
+      budgetId,
+      categoryId,
+      amount,
+    },
+    { withCredentials: true }
+  );
 
   return {
     type: EDIT_BUDGETED_AMOUNT,
@@ -110,15 +117,17 @@ export const editBudgetedAmount = async (
 export const addTransactionToCategory = async (
   transactionId,
   categoryId,
-  currentBudgetId,
-  googleId
+  currentBudgetId
 ) => {
-  const response = await axios.post(`/api/assign_transaction_to_category`, {
-    transactionId,
-    categoryId,
-    currentBudgetId,
-    googleId,
-  });
+  const response = await axios.post(
+    `/api/assign_transaction_to_category`,
+    {
+      transactionId,
+      categoryId,
+      currentBudgetId,
+    },
+    { withCredentials: true }
+  );
   return {
     type: ASSIGN_TRANSACTION_TO_CATEGORY,
     payload: response,
@@ -130,17 +139,19 @@ export const getTransactions = async (
   primaryAccount,
   startDate,
   endDate,
-  currentBudgetId,
-  googleId
+  currentBudgetId
 ) => {
-  const response = await axios.post("/api/get_transactions", {
-    accessToken,
-    primaryAccount,
-    startDate,
-    endDate,
-    currentBudgetId,
-    googleId,
-  });
+  const response = await axios.post(
+    "/api/get_transactions",
+    {
+      accessToken,
+      primaryAccount,
+      startDate,
+      endDate,
+      currentBudgetId,
+    },
+    { withCredentials: true }
+  );
 
   return {
     type: GET_TRANSACTIONS,

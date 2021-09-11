@@ -137,7 +137,6 @@ app.post("/api/create_link_token", async function (req, res) {
   };
   try {
     const createTokenResponse = await client.linkTokenCreate(request);
-    console.log(createTokenResponse.data.link_token);
     res.json(createTokenResponse.data.link_token);
   } catch (error) {
     // handle error
@@ -153,9 +152,6 @@ app.post("/api/exchange_public_token", async function (req, res, next) {
     });
     const accessToken = response.data.access_token;
     const itemID = response.data.item_id;
-
-    console.log(accessToken);
-    console.log(itemID);
 
     res.json({ accessToken, itemID });
   } catch (error) {
@@ -388,7 +384,7 @@ app.post("/api/category_budget_amount", async (req, res) => {
   }
 });
 
-app.get("/api/check_if_logged_in", async (req, res, next) => {
+app.get("/api/check_if_logged_in", async (req, res) => {
   let token = req.cookies["session-token"];
   if (!token) res.json(null);
 

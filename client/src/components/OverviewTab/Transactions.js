@@ -65,18 +65,6 @@ export default function Transactions() {
       )}
       {primaryAccountId && (
         <>
-          <div className="text-center">
-            <button
-              onClick={handleClick}
-              type="button"
-              className="btn btn-success"
-            >
-              Check for new transactions
-            </button>
-          </div>
-          <h1 className={"text-center"}>
-            Transactions for {currentBudget.title}
-          </h1>
           <h3 className={"text-center"}>
             Income: $
             {transactions
@@ -101,6 +89,15 @@ export default function Transactions() {
               .toFixed(2)
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
           </h3>
+          <div className="text-center mb-4 mt-3">
+            <button
+              onClick={handleClick}
+              type="button"
+              className="btn btn-success"
+            >
+              Check for new transactions
+            </button>
+          </div>
           {transactions && (
             <Table striped bordered hover>
               <thead>

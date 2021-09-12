@@ -63,10 +63,10 @@ export const savePlaidCredentials = async (
   };
 };
 
-export const createInitialBudget = async () => {
+export const createInitialBudget = async (month, year) => {
   const response = await axios.post(
     `/api/first_budget`,
-    {},
+    { month, year },
     { withCredentials: true }
   );
   return {

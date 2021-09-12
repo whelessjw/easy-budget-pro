@@ -281,9 +281,8 @@ app.post("/api/assign_transaction_to_category", checkAuth, async (req, res) => {
 });
 
 app.post("/api/first_budget", checkAuth, async (req, res) => {
-  const date = new Date();
-  let month = date.getMonth();
-  let year = date.getFullYear();
+  let month = req.body.month;
+  let year = req.body.year;
   let currentMonth = months[month];
   let title = `${currentMonth} ${year}`;
 
@@ -368,7 +367,9 @@ app.post("/api/category_budget_amount", checkAuth, async (req, res) => {
 
 app.get("/api/check_if_logged_in", async (req, res) => {
   let token = req.cookies["session-token"];
-  if (!token) res.json(null);
+  if (!token) {
+    res.json(null);
+  }
 
   if (token) {
     try {
@@ -387,6 +388,7 @@ app.get("/api/check_if_logged_in", async (req, res) => {
         });
     } catch (err) {
       console.log(err);
+      res.json(null);
     }
   }
 });
@@ -411,7 +413,7 @@ async function checkAuth(req, res, next) {
         });
     } catch (err) {
       console.log(err);
-      res.redirect("/");
+      res.json(null);
     }
   }
 }

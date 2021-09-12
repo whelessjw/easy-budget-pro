@@ -5,7 +5,6 @@ import CurrencyInput from "react-currency-input-field";
 import { editMonthlyIncome } from "../../actions";
 
 export default function Budget() {
-  const budgetTitle = useSelector((state) => state.user.currentBudget.title);
   const budgetId = useSelector((state) => state.user.currentBudget._id);
   const categories = useSelector(
     (state) => state.user.currentBudget.categories
@@ -25,7 +24,6 @@ export default function Budget() {
 
   return (
     <div className="text-center col-md-10 offset-md-1">
-      <h1>{budgetTitle}</h1>
       <table className="table table-striped table-borderless">
         <thead>
           <tr>

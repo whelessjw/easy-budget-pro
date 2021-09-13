@@ -8,6 +8,8 @@ import {
   GET_TRANSACTIONS,
   ASSIGN_TRANSACTION_TO_CATEGORY,
   CHECK_IF_LOGGED_IN,
+  NEXT_MONTH_BUDGET,
+  PREV_MONTH_BUDGET,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
@@ -37,6 +39,12 @@ export const userReducer = function (state = null, action) {
       return action.payload.data;
 
     case ASSIGN_TRANSACTION_TO_CATEGORY:
+      return action.payload.data;
+
+    case NEXT_MONTH_BUDGET:
+      return action.payload.data;
+
+    case PREV_MONTH_BUDGET:
       return action.payload.data;
 
     default:

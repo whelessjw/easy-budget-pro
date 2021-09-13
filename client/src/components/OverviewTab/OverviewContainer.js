@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import Budget from "./Budget";
 import { useDispatch, useSelector } from "react-redux";
-import { createInitialBudget } from "../../actions";
+import {
+  createInitialBudget,
+  getNextMonthsBudget,
+  getPrevMonthsBudget,
+} from "../../actions";
 import NavigationTabs from "../Navigation/NavigationTabs";
 import Transactions from "./Transactions";
 
@@ -27,13 +31,27 @@ export default function OverviewContainer() {
           <>
             <Row className="justify-content-md-center">
               <Col xs lg="2" className="text-center">
-                <Button variant="secondary">Previous Month</Button>
+                <Button
+                  onClick={() =>
+                    dispatch(getPrevMonthsBudget(currentBudget._id))
+                  }
+                  variant="secondary"
+                >
+                  Previous Month
+                </Button>
               </Col>
               <Col md="auto" className="text-center">
                 <h1>{budgetTitle}</h1>
               </Col>
               <Col xs lg="2" className="text-center">
-                <Button variant="secondary">Next Month</Button>
+                <Button
+                  onClick={() =>
+                    dispatch(getNextMonthsBudget(currentBudget._id))
+                  }
+                  variant="secondary"
+                >
+                  Next Month
+                </Button>
               </Col>
             </Row>
             <hr />

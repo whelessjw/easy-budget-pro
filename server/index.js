@@ -321,6 +321,112 @@ app.post("/api/first_budget", checkAuth, async (req, res) => {
   }
 });
 
+app.post("/api/next_budget", checkAuth, async (req, res) => {
+  const currentBudget = await Budget.findById(req.body.currentBudgetId);
+
+  let month = currentBudget.month === 11 ? 0 : currentBudget.month + 1;
+  let year =
+    currentBudget.month === 11 ? currentBudget.year + 1 : currentBudget.year;
+  let currentMonth = months[month];
+  let title = `${currentMonth} ${year}`;
+
+  try {
+    const alreadyExists = await Budget.findOne({ title });
+    if (!alreadyExists) {
+      const newBudget = new Budget({
+        title,
+        month,
+        year,
+        monthlyIncome: currentBudget.monthlyIncome,
+        categories: currentBudget.categories.map((c) => {
+          return {
+            name: c.name,
+            budgeted: c.budgeted,
+            spent: 0,
+            balance: c.budgeted - c.spent,
+          };
+        }),
+        transactions: {},
+      });
+
+      await newBudget.save();
+      const savedBudget = await Budget.findById(newBudget._id);
+
+      const user = await User.findOne({ email: req.user.email })
+        .populate("budgets")
+        .populate("currentBudget");
+
+      user.budgets.push(savedBudget);
+      user.currentBudget = savedBudget;
+      user.save();
+      res.json(user);
+    } else {
+      const user = await User.findOne({ email: req.user.email })
+        .populate("budgets")
+        .populate("currentBudget");
+
+      user.currentBudget = alreadyExists;
+      user.save();
+      res.json(user);
+    }
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+app.post("/api/prev_budget", checkAuth, async (req, res) => {
+  const currentBudget = await Budget.findById(req.body.currentBudgetId);
+
+  let month = currentBudget.month === 0 ? 11 : currentBudget.month - 1;
+  let year =
+    currentBudget.month === 0 ? currentBudget.year - 1 : currentBudget.year;
+  let currentMonth = months[month];
+  let title = `${currentMonth} ${year}`;
+
+  try {
+    const alreadyExists = await Budget.findOne({ title });
+    if (!alreadyExists) {
+      const newBudget = new Budget({
+        title,
+        month,
+        year,
+        monthlyIncome: currentBudget.monthlyIncome,
+        categories: currentBudget.categories.map((c) => {
+          return {
+            name: c.name,
+            budgeted: c.budgeted,
+            spent: 0,
+            balance: c.budgeted - c.spent,
+          };
+        }),
+        transactions: {},
+      });
+
+      await newBudget.save();
+      const savedBudget = await Budget.findById(newBudget._id);
+
+      const user = await User.findOne({ email: req.user.email })
+        .populate("budgets")
+        .populate("currentBudget");
+
+      user.budgets.push(savedBudget);
+      user.currentBudget = savedBudget;
+      user.save();
+      res.json(user);
+    } else {
+      const user = await User.findOne({ email: req.user.email })
+        .populate("budgets")
+        .populate("currentBudget");
+
+      user.currentBudget = alreadyExists;
+      user.save();
+      res.json(user);
+    }
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
 app.post("/api/monthly_income", checkAuth, async (req, res) => {
   const budgetId = req.body.budgetId;
   const monthlyIncome = req.body.monthlyIncome;

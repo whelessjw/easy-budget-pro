@@ -9,6 +9,8 @@ export const HANDLE_LOGIN = "HANDLE_LOGIN";
 export const HANDLE_LOGOUT = "HANDLE_LOGOUT";
 export const GET_TRANSACTIONS = "GET_TRANSACTIONS";
 export const CHECK_IF_LOGGED_IN = "CHECK_IF_LOGGED_IN";
+export const NEXT_MONTH_BUDGET = "NEXT_MONTH_BUDGET";
+export const PREV_MONTH_BUDGET = "PREV_MONTH_BUDGET";
 
 export const handleLogin = async (tokenId) => {
   const response = await axios.post(`api/login`, {
@@ -155,6 +157,36 @@ export const getTransactions = async (
 
   return {
     type: GET_TRANSACTIONS,
+    payload: response,
+  };
+};
+
+export const getNextMonthsBudget = async (currentBudgetId) => {
+  const response = await axios.post(
+    "/api/next_budget",
+    {
+      currentBudgetId,
+    },
+    { withCredentials: true }
+  );
+
+  return {
+    type: NEXT_MONTH_BUDGET,
+    payload: response,
+  };
+};
+
+export const getPrevMonthsBudget = async (currentBudgetId) => {
+  const response = await axios.post(
+    "/api/prev_budget",
+    {
+      currentBudgetId,
+    },
+    { withCredentials: true }
+  );
+
+  return {
+    type: PREV_MONTH_BUDGET,
     payload: response,
   };
 };

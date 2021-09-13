@@ -56,10 +56,11 @@ export default function CategoryRow({
           <span>
             <Button
               className="btn-sm"
+              style={{ border: "none" }}
               variant="outline-danger"
               onClick={() => setModalShow(true)}
             >
-              x
+              X
             </Button>
 
             <MyVerticallyCenteredModal

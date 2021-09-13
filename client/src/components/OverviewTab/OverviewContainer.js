@@ -8,7 +8,7 @@ import Transactions from "./Transactions";
 
 export default function OverviewContainer() {
   const dispatch = useDispatch();
-  const budgetTitle = useSelector((state) => state.user.currentBudget.title);
+  const budgetTitle = useSelector((state) => state.user.currentBudget?.title);
   const user = useSelector((state) => state.user);
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
@@ -23,18 +23,23 @@ export default function OverviewContainer() {
     <>
       <NavigationTabs defaultActiveKey="/overview" />
       <Container>
-        <Row className="justify-content-md-center">
-          <Col xs lg="2" className="text-center">
-            <Button variant="secondary">Previous Month</Button>
-          </Col>
-          <Col md="auto" className="text-center">
-            <h1>{budgetTitle}</h1>
-          </Col>
-          <Col xs lg="2" className="text-center">
-            <Button variant="secondary">Next Month</Button>
-          </Col>
-        </Row>
-        <hr />
+        {currentBudget && (
+          <>
+            <Row className="justify-content-md-center">
+              <Col xs lg="2" className="text-center">
+                <Button variant="secondary">Previous Month</Button>
+              </Col>
+              <Col md="auto" className="text-center">
+                <h1>{budgetTitle}</h1>
+              </Col>
+              <Col xs lg="2" className="text-center">
+                <Button variant="secondary">Next Month</Button>
+              </Col>
+            </Row>
+            <hr />
+          </>
+        )}
+
         <Row>
           <Col className="text-center">
             {user.budgets.length === 0 && (

@@ -7,7 +7,6 @@ export default function LogOut() {
   const handleClick = () => {
     dispatch(handleLogout());
   };
-
   return (
     <button onClick={handleClick} type="button" className="btn btn-light">
       Log Out

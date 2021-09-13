@@ -29,8 +29,8 @@ export default function OverviewContainer() {
       <Container>
         {currentBudget && (
           <>
-            <Row className="justify-content-md-center">
-              <Col xs lg="2" className="text-center">
+            <Row className="align-items-center text-center">
+              <Col xs lg="2">
                 <Button
                   onClick={() =>
                     dispatch(getPrevMonthsBudget(currentBudget._id))
@@ -40,10 +40,10 @@ export default function OverviewContainer() {
                   Previous Month
                 </Button>
               </Col>
-              <Col md="auto" className="text-center">
+              <Col md="auto">
                 <h1>{budgetTitle}</h1>
               </Col>
-              <Col xs lg="2" className="text-center">
+              <Col xs lg="2">
                 <Button
                   onClick={() =>
                     dispatch(getNextMonthsBudget(currentBudget._id))

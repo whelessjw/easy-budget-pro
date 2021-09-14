@@ -1,3 +1,7 @@
+.nav-item a {
+  color: black;
+}
+
 .tab-link a {
   color: gray;
   font-size: x-large;

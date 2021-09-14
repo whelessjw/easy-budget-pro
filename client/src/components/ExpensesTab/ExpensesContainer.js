@@ -3,6 +3,7 @@ import NavigationTabs from "../Navigation/NavigationTabs";
 import { Row, Col, Button, Container } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { getPrevMonthsBudget, getNextMonthsBudget } from "../../actions";
+import ExpensesByCategoryChart from "./ExpensesByCategoryChart";
 
 export default function ExpensesContainer() {
   const currentBudget = useSelector((state) => state.user.currentBudget);
@@ -42,8 +43,8 @@ export default function ExpensesContainer() {
             <hr />
           </>
         )}
+        <ExpensesByCategoryChart />
       </Container>
-      {"A list of expenses for the month"}
     </>
   );
 }

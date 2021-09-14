@@ -19,7 +19,7 @@ export default function CategoryRow({
 
   function MyVerticallyCenteredModal(props) {
     const handleDelete = () => {
-      dispatch(deleteCategory(name));
+      dispatch(deleteCategory(budgetId, categoryId));
 
       props.onHide();
     };

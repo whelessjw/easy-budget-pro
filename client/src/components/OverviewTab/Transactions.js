@@ -8,6 +8,9 @@ export default function Transactions() {
   const transactions = useSelector((state) => {
     return Object.values(state.user.currentBudget.transactions);
   });
+  transactions.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
   const currentBudget = useSelector((state) => state.user.currentBudget);
   const categories = useSelector(
     (state) => state.user.currentBudget.categories
@@ -99,11 +102,11 @@ export default function Transactions() {
             </button>
           </div>
           {transactions && (
-            <Table striped bordered hover>
+            <Table className="mb-5" striped bordered hover>
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Merchant Name</th>
+                  <th>Description</th>
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Category</th>
@@ -114,7 +117,7 @@ export default function Transactions() {
                   return (
                     <tr key={transaction.transaction_id}>
                       <td>{transaction.date}</td>
-                      <td>{transaction.merchant_name}</td>
+                      <td>{transaction.name}</td>
                       <td>
                         {transaction.amount >= 0 &&
                           `$${transaction.amount.toFixed(2)}`}

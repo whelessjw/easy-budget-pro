@@ -343,7 +343,7 @@ app.post("/api/next_budget", checkAuth, async (req, res) => {
             name: c.name,
             budgeted: c.budgeted,
             spent: 0,
-            balance: c.budgeted - c.spent,
+            balance: c.budgeted,
           };
         }),
         transactions: {},
@@ -374,6 +374,55 @@ app.post("/api/next_budget", checkAuth, async (req, res) => {
   }
 });
 
+app.post("/api/add_category", checkAuth, async (req, res) => {
+  const currentBudget = await Budget.findById(req.body.currentBudgetId);
+  const newCategoryName = req.body.newCategoryName;
+
+  try {
+    currentBudget.categories.push({
+      name: newCategoryName,
+      budgeted: 0,
+      spent: 0,
+      balance: 0,
+    });
+
+    await currentBudget.save();
+    const savedBudget = await Budget.findById(currentBudget._id);
+
+    const user = await User.findOne({ email: req.user.email })
+      .populate("budgets")
+      .populate("currentBudget");
+
+    user.currentBudget = savedBudget;
+    user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+app.post("/api/delete_category", checkAuth, async (req, res) => {
+  const currentBudget = await Budget.findById(req.body.currentBudgetId);
+  const categoryId = req.body.categoryId;
+
+  try {
+    currentBudget.categories.id(categoryId).remove();
+
+    await currentBudget.save();
+    const savedBudget = await Budget.findById(currentBudget._id);
+
+    const user = await User.findOne({ email: req.user.email })
+      .populate("budgets")
+      .populate("currentBudget");
+
+    user.currentBudget = savedBudget;
+    user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
 app.post("/api/prev_budget", checkAuth, async (req, res) => {
   const currentBudget = await Budget.findById(req.body.currentBudgetId);
 
@@ -396,7 +445,7 @@ app.post("/api/prev_budget", checkAuth, async (req, res) => {
             name: c.name,
             budgeted: c.budgeted,
             spent: 0,
-            balance: c.budgeted - c.spent,
+            balance: c.budgeted,
           };
         }),
         transactions: {},

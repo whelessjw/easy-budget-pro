@@ -25,7 +25,7 @@ export default function NavigationTabs(props) {
           to="/income"
         >
           <Nav.Item>
-            <Nav.Link href="/income">Income</Nav.Link>
+            <Nav.Link href="/income">Income Chart</Nav.Link>
           </Nav.Item>
         </LinkContainer>
 
@@ -36,7 +36,7 @@ export default function NavigationTabs(props) {
           to="/expenses"
         >
           <Nav.Item>
-            <Nav.Link href="/expenses">Expenses</Nav.Link>
+            <Nav.Link href="/expenses">Expense Chart</Nav.Link>
           </Nav.Item>
         </LinkContainer>
 

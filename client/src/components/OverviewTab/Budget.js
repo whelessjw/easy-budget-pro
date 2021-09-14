@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CategoryRow from "./CategoryRow";
 import CurrencyInput from "react-currency-input-field";
-import { editMonthlyIncome } from "../../actions";
+import { editMonthlyIncome, addCategory } from "../../actions";
+import { Form, Col, Row, Button } from "react-bootstrap";
 
 export default function Budget() {
   const budgetId = useSelector((state) => state.user.currentBudget._id);
   const categories = useSelector(
     (state) => state.user.currentBudget.categories
   );
+  const categoryNames = categories.map((c) => c.name.toLowerCase());
   const monthlyIncome = useSelector(
     (state) => state.user.currentBudget.monthlyIncome
   );
@@ -21,6 +23,19 @@ export default function Budget() {
   }
 
   const dispatch = useDispatch();
+
+  const [newCategory, setNewCategory] = useState("");
+
+  const handleAddCategory = (e) => {
+    e.preventDefault();
+    if (categoryNames.includes(newCategory.toLowerCase())) {
+      alert(`The '${newCategory}' category already exists`);
+      setNewCategory("");
+      return;
+    }
+    dispatch(addCategory(budgetId, newCategory));
+    setNewCategory("");
+  };
 
   return (
     <div className="text-center col-md-10 offset-md-1">
@@ -118,7 +133,26 @@ export default function Budget() {
             ))}
         </tbody>
       </table>
-      {/* <AddToCategoryBtn /> */}
+      <Form onSubmit={(e) => handleAddCategory(e)}>
+        <Row className="align-items-center">
+          <Col xs="auto">
+            <Form.Control
+              value={newCategory}
+              className="mb-5"
+              id="inlineFormInput"
+              placeholder="New Category Name"
+              onChange={(e) => {
+                setNewCategory(e.target.value);
+              }}
+            />
+          </Col>
+          <Col xs="auto">
+            <Button type="submit" className="mb-5">
+              Add Category
+            </Button>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 }

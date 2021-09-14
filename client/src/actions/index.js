@@ -11,6 +11,7 @@ export const GET_TRANSACTIONS = "GET_TRANSACTIONS";
 export const CHECK_IF_LOGGED_IN = "CHECK_IF_LOGGED_IN";
 export const NEXT_MONTH_BUDGET = "NEXT_MONTH_BUDGET";
 export const PREV_MONTH_BUDGET = "PREV_MONTH_BUDGET";
+export const ADD_CATEGORY = "ADD_CATEGORY";
 
 export const handleLogin = async (tokenId) => {
   const response = await axios.post(`api/login`, {
@@ -74,13 +75,6 @@ export const createInitialBudget = async (month, year) => {
   return {
     type: CREATE_INITIAL_BUDGET,
     payload: response,
-  };
-};
-
-export const deleteCategory = (name) => {
-  return {
-    type: DELETE_CATEGORY,
-    payload: name,
   };
 };
 
@@ -187,6 +181,38 @@ export const getPrevMonthsBudget = async (currentBudgetId) => {
 
   return {
     type: PREV_MONTH_BUDGET,
+    payload: response,
+  };
+};
+
+export const addCategory = async (currentBudgetId, newCategoryName) => {
+  const response = await axios.post(
+    "/api/add_category",
+    {
+      currentBudgetId,
+      newCategoryName,
+    },
+    { withCredentials: true }
+  );
+
+  return {
+    type: ADD_CATEGORY,
+    payload: response,
+  };
+};
+
+export const deleteCategory = async (currentBudgetId, categoryId) => {
+  const response = await axios.post(
+    "/api/delete_category",
+    {
+      currentBudgetId,
+      categoryId,
+    },
+    { withCredentials: true }
+  );
+
+  return {
+    type: DELETE_CATEGORY,
     payload: response,
   };
 };

@@ -29,7 +29,7 @@ export default function OverviewContainer() {
       <Container>
         {currentBudget && (
           <>
-            <Row className="align-items-center text-center">
+            <Row className="justify-content-md-center align-items-center text-center">
               <Col xs lg="2">
                 <Button
                   onClick={() =>

@@ -25,18 +25,7 @@ export default function NavigationTabs(props) {
           to="/income"
         >
           <Nav.Item>
-            <Nav.Link href="/income">Income Chart</Nav.Link>
-          </Nav.Item>
-        </LinkContainer>
-
-        <LinkContainer
-          className="tab-link"
-          activeClassName="tab-link-active"
-          exact
-          to="/expenses"
-        >
-          <Nav.Item>
-            <Nav.Link href="/expenses">Expense Chart</Nav.Link>
+            <Nav.Link href="/income">Charts</Nav.Link>
           </Nav.Item>
         </LinkContainer>
 

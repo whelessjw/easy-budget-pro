@@ -167,7 +167,7 @@ app.post("/api/save_plaid_credentials", checkAuth, async function (req, res) {
     });
 });
 
-app.get("/api/get_balances", async (req, res) => {
+app.post("/api/get_balances", checkAuth, async (req, res) => {
   const accessToken = req.body.accessToken;
   const request = {
     access_token: accessToken,
@@ -175,7 +175,15 @@ app.get("/api/get_balances", async (req, res) => {
 
   try {
     const balanceResponse = await client.accountsBalanceGet(request);
-    res.json(balanceResponse.data);
+
+    const user = await User.findOne({ email: req.user.email })
+      .populate("budgets")
+      .populate("currentBudget");
+
+    user.balances = balanceResponse.data.accounts;
+    await user.save();
+
+    res.json(user);
   } catch (error) {
     console.log(error);
   }

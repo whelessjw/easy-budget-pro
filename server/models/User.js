@@ -31,6 +31,7 @@ const UserSchema = new Schema({
       institution_id: String,
     },
   },
+  balances: [],
 });
 
 const UserModel = mongoose.model("User", UserSchema);

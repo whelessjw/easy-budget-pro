@@ -12,6 +12,7 @@ export const CHECK_IF_LOGGED_IN = "CHECK_IF_LOGGED_IN";
 export const NEXT_MONTH_BUDGET = "NEXT_MONTH_BUDGET";
 export const PREV_MONTH_BUDGET = "PREV_MONTH_BUDGET";
 export const ADD_CATEGORY = "ADD_CATEGORY";
+export const GET_BALANCES = "GET_BALANCES";
 
 export const handleLogin = async (tokenId) => {
   const response = await axios.post(`api/login`, {
@@ -213,6 +214,19 @@ export const deleteCategory = async (currentBudgetId, categoryId) => {
 
   return {
     type: DELETE_CATEGORY,
+    payload: response,
+  };
+};
+
+export const getBalances = async (accessToken) => {
+  const response = await axios.post(
+    "/api/get_balances",
+    { accessToken },
+    { withCredentials: true }
+  );
+
+  return {
+    type: GET_BALANCES,
     payload: response,
   };
 };

@@ -13,7 +13,7 @@ export default function IncomeContainer() {
   const budgetTitle = useSelector((state) => state.user.currentBudget?.title);
   return (
     <>
-      <NavigationTabs defaultActiveKey="/income" />
+      <NavigationTabs defaultActiveKey="/charts" />
       <Container className={css(styles.container)}>
         {currentBudget && (
           <>

@@ -22,10 +22,10 @@ export default function NavigationTabs(props) {
           className="tab-link"
           activeClassName="tab-link-active"
           exact
-          to="/income"
+          to="/charts"
         >
           <Nav.Item>
-            <Nav.Link href="/income">Charts</Nav.Link>
+            <Nav.Link href="/charts">Charts</Nav.Link>
           </Nav.Item>
         </LinkContainer>
 

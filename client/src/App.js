@@ -49,8 +49,7 @@ function App() {
           {user && (
             <Switch>
               <Route path="/overview" component={OverviewContainer} />
-              <Route path="/income" component={IncomeContainer} />
-              <Route path="/expenses" component={ExpensesContainer} />
+              <Route path="/charts" component={IncomeContainer} />
               <Route path="/balances" component={AccountBalancesContainer} />
               <Redirect to="/overview" />
             </Switch>

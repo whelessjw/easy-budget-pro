@@ -12,6 +12,7 @@ import {
   PREV_MONTH_BUDGET,
   ADD_CATEGORY,
   DELETE_CATEGORY,
+  GET_BALANCES,
 } from "../actions";
 
 export const userReducer = function (state = null, action) {
@@ -53,6 +54,9 @@ export const userReducer = function (state = null, action) {
       return action.payload.data;
 
     case DELETE_CATEGORY:
+      return action.payload.data;
+
+    case GET_BALANCES:
       return action.payload.data;
 
     default:

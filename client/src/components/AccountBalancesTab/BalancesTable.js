@@ -25,7 +25,7 @@ export default function BalancesTable() {
                   <tbody>
                     {balances.map((b) => {
                       return (
-                        <tr>
+                        <tr key={b.account_id}>
                           <td>
                             {b.name.replace(/\b\w/g, (c) => c.toUpperCase())}
                           </td>

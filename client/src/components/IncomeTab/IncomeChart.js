@@ -9,6 +9,8 @@ export default function ExpensesByCategoryChart() {
     return Object.values(state.user.currentBudget.transactions);
   });
 
+  transactions.sort((a, b) => a.amount - b.amount);
+
   transactions.forEach((t) => {
     if (t.amount < 0) {
       incomeObject[t.name]
